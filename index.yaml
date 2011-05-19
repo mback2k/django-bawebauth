@@ -10,6 +10,16 @@ indexes:
 # automatically uploaded to the admin console when you next deploy
 # your application using appcfg.py.
 
+- kind: bawebauth_client
+  properties:
+  - name: user_id
+  - name: name
+
+- kind: bawebauth_device
+  properties:
+  - name: user_id
+  - name: name
+
 - kind: django_admin_log
   properties:
   - name: user_id
