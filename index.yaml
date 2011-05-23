@@ -20,6 +20,19 @@ indexes:
   - name: user_id
   - name: name
 
+- kind: bawebauth_usage
+  properties:
+  - name: user_id
+  - name: crdate
+    direction: desc
+
+- kind: bawebauth_usage
+  properties:
+  - name: device_id
+  - name: user_id
+  - name: crdate
+    direction: desc
+
 - kind: django_admin_log
   properties:
   - name: user_id

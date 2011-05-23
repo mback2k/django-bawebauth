@@ -12,8 +12,10 @@ urlpatterns = patterns('bawebauth.views',
 
 urlpatterns += patterns('bawebauth.methods',
     (r'^api/restful/user/auth/$', 'auth_user'),
+    (r'^api/restful/user/quit/$', 'quit_user'),
     (r'^api/restful/device/create/$', 'create_device'),
     (r'^api/restful/device/delete/$', 'delete_device'),
     (r'^api/restful/usage/push/$', 'push_usage'),
     (r'^api/restful/usage/list/$', 'list_usage'),
+    (r'^api/restful/usage/sum/$', 'sum_usage'),
 )

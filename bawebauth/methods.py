@@ -31,6 +31,13 @@ def auth_user(request):
     return HttpResponse('%s' % request.session.session_key, mimetype="text/plain")
 
 @csrf_exempt
+def quit_user(request):
+    data = parse_request(request)
+    session = restore_session(request, data['user'])
+    session.flush()
+    return HttpResponse('1', mimetype="text/plain")
+
+@csrf_exempt
 def create_device(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
@@ -54,9 +61,9 @@ def push_usage(request):
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     device = get_object_or_404(Device, id=int(data['device']), user=user, ident=data['ident'])
     if 'date' in data:
-        usage, created = Usage.objects.create(user=user, device=device, send=int(data['bytes-send']), received=int(data['bytes-received']), crdate=datetime.strptime(data['date'], '%Y-%m-%d %H:%M:%S'))
+        usage = Usage.objects.create(user=user, device=device, send=int(data['bytes-send']), received=int(data['bytes-received']), crdate=datetime.strptime(data['date'], '%Y-%m-%d %H:%M:%S'))
     else:
-        usage, created = Usage.objects.create(user=user, device=device, send=int(data['bytes-send']), received=int(data['bytes-received']))
+        usage = Usage.objects.create(user=user, device=device, send=int(data['bytes-send']), received=int(data['bytes-received']))
     return HttpResponse('%d' % usage.id, mimetype="text/plain")
 
 @csrf_exempt
@@ -64,17 +71,44 @@ def list_usage(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
-    query = Usage.objects.filter(user=user)
+    query = Usage.objects.order_by('-crdate').filter(user=user)
     if 'device' in data:
         device = get_object_or_404(Device, id=int(data['device']), user=user)
         query = query.filter(device=device)
-    if 'max-results' in data: 
-        query = query[:int(data['max-results'])]
     if 'date-start' in data:
         query = query.filter(crdate__gt=datetime.strptime(data['date-start'], '%Y-%m-%d %H:%M:%S'))
     if 'date-end' in data:
         query = query.filter(crdate__lt=datetime.strptime(data['date-end'], '%Y-%m-%d %H:%M:%S'))
+    if 'max-results' in data: 
+        query = query[:int(data['max-results'])]
     result = ''
     for usage in query:
-        result += "%d\r%s\r%d\r%d\r%s\r\n" % (device.id, device.name, usage.send, usage.received, usage.crdate.strftime('%Y-%m-%d %H:%M:%S'))
+        result += "%d\r%s\r%d\r%d\r%s\r\n" % (usage.device.id, usage.device.name, usage.send, usage.received, usage.crdate.strftime('%Y-%m-%d %H:%M:%S'))
+    return HttpResponse(result)
+
+@csrf_exempt
+def sum_usage(request):
+    data = parse_request(request)
+    session = restore_session(request, data['user'])
+    user = get_object_or_404(User, id=int(session['api_restful_userid']))
+    query = Usage.objects.order_by('-crdate').filter(user=user)
+    if 'device' in data:
+        device = get_object_or_404(Device, id=int(data['device']), user=user)
+        query = query.filter(device=device)
+    if 'date-start' in data:
+        query = query.filter(crdate__gt=datetime.strptime(data['date-start'], '%Y-%m-%d %H:%M:%S'))
+    if 'date-end' in data:
+        query = query.filter(crdate__lt=datetime.strptime(data['date-end'], '%Y-%m-%d %H:%M:%S'))
+    if 'max-results' in data: 
+        query = query[:int(data['max-results'])]
+    sum = {}
+    for usage in query:
+        if not usage.device.id in sum:
+            sum[usage.device.id] = {'send': 0, 'received': 0}
+        sum[usage.device.id]['name'] = usage.device.name
+        sum[usage.device.id]['send'] += usage.send
+        sum[usage.device.id]['received'] += usage.received
+    result = ''
+    for device_id in sum:
+        result += "%d\r%s\r%d\r%d\r\n" % (device_id, sum[device_id]['name'], sum[device_id]['send'], sum[device_id]['received'])
     return HttpResponse(result)
