@@ -25,8 +25,8 @@
     <strong class="message">This form uses a client-side hash algorithm, please activate JavaScript!</strong>
   </noscript>
 </form>
-<script type="text/javascript" src="http://crypto-js.googlecode.com/files/2.2.0-crypto-min.js"></script>
-<script type="text/javascript" src="http://crypto-js.googlecode.com/files/2.2.0-crypto-sha1.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}crypto-min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}crypto-sha1.js"></script>
 <script type="text/javascript">
 $(document).ready(function(){
   $('form#login').submit(function () {
