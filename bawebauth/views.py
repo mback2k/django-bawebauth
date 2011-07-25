@@ -62,7 +62,6 @@ def delete_device(request, device_id):
     
     template_values = {
         'devices': devices,
-        'device_create_form': create_form,
     }
 
     return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
@@ -76,7 +75,6 @@ def delete_device_ask(request, device_id):
     
     template_values = {
         'devices': devices,
-        'device_create_form': create_form,
     }
 
     return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
