@@ -35,7 +35,7 @@
         <td><a href="{% url bawebauth.views.show_device device.id %}" title="{{ device.name }}">{{ device.name }}</a></td>
         <td></td>
         <td>{% if device.update %}{{ device.update|localedatetime }}{% else %}None{% endif %}</td>
-        <td>{% if device.running %}<img src="{{ STATIC_URL }}icons/loading.gif" alt="{{ device.status }}" title="{{ device.status }}" />{% else %}<a href="{% url bawebauth.views.edit_device device.id %}" title="Edit"><img src="{{ STATIC_URL }}icons/pencil.png" alt="Edit" /></a><a href="{% url bawebauth.views.switch_device device.id %}" title="{% if not device.enabled %}Enable{% else %}Disable{% endif %}"><img src="{{ STATIC_URL }}icons/{% if not device.enabled %}connect{% else %}disconnect{% endif %}.png" alt="{% if not device.enabled %}Enable{% else %}Disable{% endif %}" /></a><a href="{% url bawebauth.views.delete_device_ask device.id %}" title="Delete"><img src="{{ STATIC_URL }}icons/delete.png" alt="Delete" /></a>{% endif %}</td>
+        <td>{% if device.running %}<img src="{{ STATIC_URL }}icons/loading.gif" alt="{{ device.status }}" title="{{ device.status }}" />{% else %}<a href="{% url bawebauth.views.edit_device device.id %}" title="Edit"><img src="{{ STATIC_URL }}icons/pencil.png" alt="Edit" /></a><a href="{% url bawebauth.views.delete_device_ask device.id %}" title="Delete"><img src="{{ STATIC_URL }}icons/delete.png" alt="Delete" /></a>{% endif %}</td>
       </tr>
       {% endfor %}
     </tbody>
