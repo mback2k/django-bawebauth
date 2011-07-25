@@ -36,7 +36,7 @@ def show_device(request, device_id):
 def edit_device(request, device_id):
     devices = Device.objects.all().filter(user=request.user).order_by('name')
     device = get_object_or_404(Device, user=request.user, id=device_id)
-    edit_form = DeviceForm(instance=calendar, data=request.POST if request.method == 'POST' else None)
+    edit_form = DeviceForm(instance=device, data=request.POST if request.method == 'POST' else None)
 
     if edit_form.is_valid():
         device = edit_form.save(commit=False)
@@ -53,7 +53,7 @@ def edit_device(request, device_id):
     return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
 
 @login_required
-def delete_device(request, calendar_id):
+def delete_device(request, device_id):
     devices = Device.objects.all().filter(user=request.user).order_by('name')
     device = get_object_or_404(Device, user=request.user, id=device_id)
     device.delete()
@@ -68,15 +68,15 @@ def delete_device(request, calendar_id):
     return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
 
 @login_required
-def delete_device_ask(request, calendar_id):
+def delete_device_ask(request, device_id):
     devices = Device.objects.all().filter(user=request.user).order_by('name')
     device = get_object_or_404(Device, user=request.user, id=device_id)
     
-    messages.warning(request, 'Do you want to delete calendar "%s"? <a href="%s" title="Yes">Yes</a>' % (device, reverse('bawebauth.views.delete_device', kwargs={'device_id': device.id})))
+    messages.warning(request, 'Do you want to delete device "%s"? <a href="%s" title="Yes">Yes</a>' % (device, reverse('bawebauth.views.delete_device', kwargs={'device_id': device.id})))
     
     template_values = {
-        'calendars': calendars,
-        'calendar_create_form': create_form,
+        'devices': devices,
+        'device_create_form': create_form,
     }
 
     return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
