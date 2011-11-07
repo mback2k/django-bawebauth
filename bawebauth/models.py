@@ -27,4 +27,4 @@ class Usage(models.Model):
     crdate = models.DateTimeField(_('date created'), auto_now_add=True)
     
     def __unicode__(self):
-        return u'%s %s+ %s-' % (crdate, send, received)
+        return u'%s %s+ %s-' % (self.crdate, self.send, self.received)
