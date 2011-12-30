@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from bawebauth.forms import DeviceForm
 from bawebauth.models import User, Device, Usage
 from django.shortcuts import get_object_or_404
@@ -36,7 +36,7 @@ def auth_user(request):
             session['api_restful_userid'] = user.id
             return HttpResponse('%s' % session.session_key, mimetype="text/plain")
     session.flush()
-    return HttpResponse('', mimetype="text/plain")
+    return HttpResponseForbidden('', mimetype="text/plain")
 
 @csrf_exempt
 def quit_user(request):
