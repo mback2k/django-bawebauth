@@ -6,6 +6,7 @@ from bawebauth.models import User, Device, Usage
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.sessions.backends.db import SessionStore
+from django.contrib.auth import authenticate
 
 def parse_request(request):
     data = {}
@@ -24,11 +25,18 @@ def restore_session(request, session):
 @csrf_exempt
 def auth_user(request):
     data = parse_request(request)
-    user, created = User.objects.get_or_create(username=data['username'], email='%s@student.dhbw-mannheim.de' % data['username'])
-    user.set_password(data['password'])
-    user.save()
-    request.session['api_restful_userid'] = user.id
-    return HttpResponse('%s' % request.session.session_key, mimetype="text/plain")
+    session = request.session
+    try:
+        User.objects.get(username=data['username'])
+    except User.DoesNotExist:
+        User.objects.create_user(username=data['username'], email='%s@student.dhbw-mannheim.de' % data['username'], password=data['password'])
+    user = authenticate(username=data['username'], password=data['password'])
+    if user:
+        if user.is_active and user.id > 0:
+            session['api_restful_userid'] = user.id
+            return HttpResponse('%s' % session.session_key, mimetype="text/plain")
+    session.flush()
+    return HttpResponse('', mimetype="text/plain")
 
 @csrf_exempt
 def quit_user(request):
