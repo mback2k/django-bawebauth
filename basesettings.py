@@ -94,7 +94,6 @@ INSTALLED_APPS = (
     'djkombu',
     
     'yamlcss',
-    'jquery',
     'jdatetime',
     
     'bawebauth',
