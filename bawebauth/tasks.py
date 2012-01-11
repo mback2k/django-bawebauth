@@ -1,4 +1,4 @@
-from celery.decorators import task
+from celery.task import task
 from bawebauth.models import Device, Usage
 
 @task()
