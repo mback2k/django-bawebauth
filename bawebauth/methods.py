@@ -20,7 +20,7 @@ def parse_request(request):
     return data
 
 def restore_session(request, session):
-    if not request.session:
+    if not request.session or not request.session.session_key == session:
         request.session = SessionStore(session_key=session)
     return request.session
 
