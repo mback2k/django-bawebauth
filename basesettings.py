@@ -156,7 +156,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['stream'],
-            'level': 'INFO',
+            'level': 'DEBUG',
             'propagate': True,
         },
         'django.request': {

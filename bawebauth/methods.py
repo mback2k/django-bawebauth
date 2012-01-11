@@ -8,13 +8,15 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.auth import authenticate
 
+logger = logging.getLogger('django')
+
 def parse_request(request):
     data = {}
     for line in request.readlines():
         if ':' in line:
             line = line.partition(':')
             data[line[0].strip().lower()] = line[2].strip()
-    logging.info(str(data))
+    logger.debug(str(data))
     return data
 
 def restore_session(request, session):
@@ -35,7 +37,7 @@ def auth_user(request):
         if user.is_active and user.id > 0:
             session['api_restful_userid'] = user.id
             session.modified = True
-            logging.error('auth_user %s %s %d' % (repr(data), session.session_key, user.id))
+            logger.warning('auth_user %s %s %d' % (repr(data), session.session_key, user.id))
             return HttpResponse('%s' % session.session_key, mimetype="text/plain")
     session.flush()
     return HttpResponseForbidden('', mimetype="text/plain")
@@ -51,7 +53,7 @@ def quit_user(request):
 def create_device(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
-    logging.error('create_device %s %s' % (repr(data), session.session_key))
+    logger.warning('create_device %s %s' % (repr(data), session.session_key))
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     device, created = Device.objects.get_or_create(user=user, ident=data['ident'], defaults={'name': data['name']})
     return HttpResponse('%d' % device.id, mimetype="text/plain")
