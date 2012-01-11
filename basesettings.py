@@ -160,8 +160,8 @@ LOGGING = {
             'propagate': True,
         },
         'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
+            'handlers': ['stream', 'mail_admins'],
+            'level': 'INFO',
             'propagate': True,
         }
     }
