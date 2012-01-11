@@ -38,6 +38,7 @@ def auth_user(request):
             session['api_restful_userid'] = user.id
             session.modified = True
             logger.warning('auth_user %s %s %d' % (repr(data), session.session_key, user.id))
+            logger.warning('auth_user session %s' % repr(session.keys()))
             return HttpResponse('%s' % session.session_key, mimetype="text/plain")
     session.flush()
     return HttpResponseForbidden('', mimetype="text/plain")
@@ -54,6 +55,7 @@ def create_device(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
     logger.warning('create_device %s %s' % (repr(data), session.session_key))
+    logger.warning('create_device session %s' % repr(session.keys()))
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     device, created = Device.objects.get_or_create(user=user, ident=data['ident'], defaults={'name': data['name']})
     return HttpResponse('%d' % device.id, mimetype="text/plain")
