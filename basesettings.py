@@ -133,25 +133,15 @@ TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), 'templates'),)
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
-        }
-    },
     'handlers': {
         'stream': {
-            'level': 'DEBUG',
+            'level': 'WARNING',
             'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
         },
         'mail_admins': {
             'level': 'ERROR',
             'class': 'django.utils.log.AdminEmailHandler',
-            'formatter': 'simple'
-        }
+        },
     },
     'loggers': {
         'django': {
@@ -163,8 +153,8 @@ LOGGING = {
             'handlers': ['stream', 'mail_admins'],
             'level': 'INFO',
             'propagate': True,
-        }
-    }
+        },
+    },
 }
 
 LOGIN_URL = '/login/'
