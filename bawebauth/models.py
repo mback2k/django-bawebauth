@@ -21,7 +21,7 @@ class Device(models.Model):
         
     @cache_property
     def last_usage(self):
-        return self.usages.get()
+        return self.usage_set.latest('crdate')
 
 class Usage(models.Model):
     user = models.ForeignKey(User)
