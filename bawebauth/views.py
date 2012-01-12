@@ -30,7 +30,7 @@ def show_device(request, device_id):
         'devices': devices,
         'device': device,
         'today': datetime.datetime.now(),
-        'yesterday': datetime.datetime.now() - datetime.timedelta(day=1),
+        'yesterday': datetime.datetime.now() - datetime.timedelta(days=1),
     }
     
     return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
