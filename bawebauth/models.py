@@ -14,10 +14,14 @@ class Device(models.Model):
     
     def __unicode__(self):
         return self.name
+
+    @cache_property
+    def usages(self):
+        return self.usage_set.order_by('-crdate')
         
     @cache_property
     def last_usage(self):
-        return self.usage_set.order_by('-crdate').get()
+        return self.usages.get()
 
 class Usage(models.Model):
     user = models.ForeignKey(User)

@@ -20,6 +20,26 @@
     </div>
   </fieldset>
   </form>
+  {% else %}
+  <div id="chart_usage" style="width: 680px; height: 240px;"></div>
+  <script type='text/javascript'>
+    google.load('visualization', '1', {'packages':['annotatedtimeline']});
+    google.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+      var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_usage'));
+      var data = new google.visualization.DataTable();
+      data.addColumn('datetime', 'Date');
+      data.addColumn('number', 'Send');
+      data.addColumn('number', 'Received');
+      data.addRows([
+        {% for usage in device.usages %}
+        [new Date({{ usage.crdate.year }}, {{ usage.crdate.month }}, {{ usage.crdate.day }}, {{ usage.crdate.hour }}, {{ usage.crdate.minute }}, {{ usage.crdate.second }}), {{ usage.send }}, {{ usage.received }}],
+        {% endfor %}
+      ]);
+      chart.draw(data);
+    }
+  </script>
   {% endif %}
   {% endif %}
   <table class="full">
@@ -33,8 +53,8 @@
       {% for device in devices %}
       <tr>
         <td><a href="{% url bawebauth.views.show_device device.id %}" title="{{ device.name }}">{{ device.name }}</a></td>
+        <td>{% if device.last_usage and device.last_usage.crdate %}{{ device.last_usage.crdate|localedatetime }}{% else %}None{% endif %}</td>
         <td></td>
-        <td>{% if device.update %}{{ device.update|localedatetime }}{% else %}None{% endif %}</td>
         <td>{% if device.running %}<img src="{{ STATIC_URL }}icons/loading.gif" alt="{{ device.status }}" title="{{ device.status }}" />{% else %}<a href="{% url bawebauth.views.edit_device device.id %}" title="Edit"><img src="{{ STATIC_URL }}icons/pencil.png" alt="Edit" /></a><a href="{% url bawebauth.views.delete_device_ask device.id %}" title="Delete"><img src="{{ STATIC_URL }}icons/delete.png" alt="Delete" /></a>{% endif %}</td>
       </tr>
       {% endfor %}
