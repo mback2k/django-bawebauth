@@ -23,7 +23,7 @@
   {% else %}
   <div id="chart_usage" style="width: 680px; height: 240px;"></div>
   <script type='text/javascript'>
-    google.load('visualization', '1', {'packages':['annotatedtimeline']});
+    google.load('visualization', '1', {'packages': ['annotatedtimeline']});
     google.setOnLoadCallback(drawChart);
 
     function drawChart() {
@@ -37,7 +37,7 @@
         [new Date({{ usage.crdate.year }}, {{ usage.crdate.month }}, {{ usage.crdate.day }}, {{ usage.crdate.hour }}, {{ usage.crdate.minute }}, {{ usage.crdate.second }}), {{ usage.send }}, {{ usage.received }}],
         {% endfor %}
       ]);
-      chart.draw(data);
+      chart.draw(data, {'scaleType': 'maximized'});
     }
   </script>
   {% endif %}
