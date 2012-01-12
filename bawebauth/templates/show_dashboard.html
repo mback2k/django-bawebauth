@@ -37,7 +37,7 @@
         [new Date({{ usage.crdate.year }}, {{ usage.crdate.month }}, {{ usage.crdate.day }}, {{ usage.crdate.hour }}, {{ usage.crdate.minute }}, {{ usage.crdate.second }}), {{ usage.send }}, {{ usage.received }}],
         {% endfor %}
       ]);
-      chart.draw(data, {'scaleType': 'maximized'});
+      chart.draw(data, {'scaleType': 'fixed', 'zoomStartTime': new Date({{ yesterday.year }}, {{ yesterday.month }}, {{ yesterday.day }}, {{ yesterday.hour }}, {{ yesterday.minute }}, {{ yesterday.second }}), 'zoomEndTime': new Date({{ today.year }}, {{ today.month }}, {{ today.day }}, {{ today.hour }}, {{ today.minute }}, {{ today.second }})});
     }
   </script>
   {% endif %}

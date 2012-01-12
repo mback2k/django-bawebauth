@@ -1,3 +1,4 @@
+import datetime
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
@@ -28,6 +29,8 @@ def show_device(request, device_id):
     template_values = {
         'devices': devices,
         'device': device,
+        'today': datetime.datetime.now(),
+        'yesterday': datetime.datetime.now() - datetime.timedelta(day=1),
     }
     
     return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
