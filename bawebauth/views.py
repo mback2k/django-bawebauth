@@ -29,8 +29,8 @@ def show_device(request, device_id):
     template_values = {
         'devices': devices,
         'device': device,
-        'today': datetime.datetime.now(),
-        'yesterday': datetime.datetime.now() - datetime.timedelta(days=1),
+        'today': device.last_usage.crdate if device.last_usage else None,
+        'yesterday': device.last_usage.crdate - datetime.timedelta(days=1) if device.last_usage else None,
     }
     
     return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))

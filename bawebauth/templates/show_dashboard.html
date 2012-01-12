@@ -29,6 +29,7 @@
     function drawChart() {
       var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_usage'));
       var data = new google.visualization.DataTable();
+
       data.addColumn('datetime', 'Date');
       data.addColumn('number', 'Send');
       data.addColumn('number', 'Received');
@@ -37,7 +38,12 @@
         [new Date({{ usage.crdate.year }}, {{ usage.crdate.month }}, {{ usage.crdate.day }}, {{ usage.crdate.hour }}, {{ usage.crdate.minute }}, {{ usage.crdate.second }}), {{ usage.send }}, {{ usage.received }}],
         {% endfor %}
       ]);
-      chart.draw(data, {'scaleType': 'fixed', 'zoomStartTime': new Date({{ yesterday.year }}, {{ yesterday.month }}, {{ yesterday.day }}, {{ yesterday.hour }}, {{ yesterday.minute }}, {{ yesterday.second }}), 'zoomEndTime': new Date({{ today.year }}, {{ today.month }}, {{ today.day }}, {{ today.hour }}, {{ today.minute }}, {{ today.second }})});
+
+      chart.draw(data, {
+        'scaleType': 'maximized',
+        {% if yesterday %}'zoomStartTime': new Date({{ yesterday.year }}, {{ yesterday.month }}, {{ yesterday.day }}, {{ yesterday.hour }}, {{ yesterday.minute }}, {{ yesterday.second }}),{% endif %}
+        {% if today %}'zoomEndTime': new Date({{ today.year }}, {{ today.month }}, {{ today.day }}, {{ today.hour }}, {{ today.minute }}, {{ today.second }}),{% endif %}
+      });
     }
   </script>
   {% endif %}
