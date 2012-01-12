@@ -33,11 +33,7 @@
       data.addColumn('datetime', 'Date');
       data.addColumn('number', 'Send');
       data.addColumn('number', 'Received');
-      data.addRows([
-        {% for usage in device.usages %}
-        [new Date({{ usage.crdate.year }}, {{ usage.crdate.month }}, {{ usage.crdate.day }}, {{ usage.crdate.hour }}, {{ usage.crdate.minute }}, {{ usage.crdate.second }}), {{ usage.send }}, {{ usage.received }}],
-        {% endfor %}
-      ]);
+      data.addRows([{% for usage in device.usages %}[new Date({{ usage.crdate.year }}, {{ usage.crdate.month }}, {{ usage.crdate.day }}, {{ usage.crdate.hour }}, {{ usage.crdate.minute }}, {{ usage.crdate.second }}), {{ usage.send }}, {{ usage.received }}],{% endfor %}]);
 
       chart.draw(data, {
         'scaleType': 'maximized',
