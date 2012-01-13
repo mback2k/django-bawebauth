@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
 from bawebauth.forms import DeviceForm
 from bawebauth.models import User, Device, Usage
 from django.shortcuts import get_object_or_404
@@ -128,5 +128,6 @@ def sum_usage(request):
 @login_required
 def api_device_usages(request, device_id, format='json'):
     device = get_object_or_404(Device, user=request.user, id=device_id)
-    if not format in ['xml', 'json', 'yaml']: format = 'json'
+    if not format in ['xml', 'json', 'yaml']:
+        return HttpResponseBadRequest()
     return HttpResponse(serializers.serialize(format, device.usages), mimetype='application/%s' % format)
