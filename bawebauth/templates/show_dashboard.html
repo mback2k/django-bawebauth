@@ -38,7 +38,7 @@
           $.each(json, function(key, value) {
             var data_crdate = new Date(); data_crdate.setISO8601(value.fields.crdate.replace(/ /, 'T'));
             if (data_crdate > data_latest) data_latest = data_crdate;
-            data.addRow([data_crdate, value.fields.send, value.fields.received]);
+            data.addRows([[data_crdate, value.fields.send, value.fields.received]]);
           });
 
           chart.draw(data, {
