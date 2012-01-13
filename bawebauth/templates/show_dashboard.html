@@ -25,25 +25,27 @@
   <script type='text/javascript'>
     google.load('visualization', '1', {'packages': ['annotatedtimeline']});
     google.setOnLoadCallback(function() {
-      $.getJSON('{% url bawebauth.methods.api_device_usages device.id 'json' %}', function(json) {
-        var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_usage'));
-        var data = new google.visualization.DataTable();
-        var data_latest = new Date(0);
+      $(document).ready(function() {
+        $.getJSON('{% url bawebauth.methods.api_device_usages device.id 'json' %}', function(json) {
+          var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_usage'));
+          var data = new google.visualization.DataTable();
+          var data_latest = new Date(0);
 
-        data.addColumn('datetime', 'Date');
-        data.addColumn('number', 'Send');
-        data.addColumn('number', 'Received');
+          data.addColumn('datetime', 'Date');
+          data.addColumn('number', 'Send');
+          data.addColumn('number', 'Received');
 
-        $.each(json, function(key, value) {
-          var data_crdate = new Date().setISO8601(value.fields.crdate.replace(/ /, 'T'));
-          if (data_crdate > data_latest) data_latest = data_crdate;
-          data.addRow([data_crdate, value.fields.send, value.fields.received]);
-        });
+          $.each(json, function(key, value) {
+            var data_crdate = new Date().setISO8601(value.fields.crdate.replace(/ /, 'T'));
+            if (data_crdate > data_latest) data_latest = data_crdate;
+            data.addRow([data_crdate, value.fields.send, value.fields.received]);
+          });
 
-        chart.draw(data, {
-          'scaleType': 'maximized',
-          'zoomStartTime': data_latest.setDate(data_latest.getDate()-1),
-          'zoomEndTime': data_latest,
+          chart.draw(data, {
+            'scaleType': 'maximized',
+            'zoomStartTime': data_latest.setDate(data_latest.getDate()-1),
+            'zoomEndTime': data_latest,
+          });
         });
       });
     });
