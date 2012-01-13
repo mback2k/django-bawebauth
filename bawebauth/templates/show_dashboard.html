@@ -41,12 +41,10 @@
           data.addRow([data_crdate, value.fields.send, value.fields.received]);
         });
 
-        google.setOnLoadCallback(function() {
-          chart.draw(data, {
-            'scaleType': 'maximized',
-            'zoomStartTime': data_latest.setDate(data_latest.getDate()-1),
-            'zoomEndTime': data_latest,
-          });
+        chart.draw(data, {
+          'scaleType': 'maximized',
+          'zoomStartTime': data_latest.setDate(data_latest.getDate()-1),
+          'zoomEndTime': data_latest,
         });
       });
     });
