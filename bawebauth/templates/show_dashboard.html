@@ -38,7 +38,7 @@
 
           $.each(json, function(key, value) {
             var data_crdate = new Date(); data_crdate.setISO8601(value.fields.crdate.replace(/ /, 'T'));
-            if (data_crdate > data_latest) data_latest = data_crdate;
+            if (data_crdate > data_latest) data_latest = new Date(data_crdate.getTime());
             if (data_previous != null && ((data_crdate - data_previous) > (1000 * 60 * 10))) {
               var data_fix1 = new Date(data_previous.getTime());
               var data_fix2 = new Date(data_crdate.getTime());
@@ -47,7 +47,7 @@
               data.addRows([[data_fix1, 0, 0]]);
               data.addRows([[data_fix2, 0, 0]]);
             }
-            data_previous = data_crdate;
+            data_previous = new Date(data_crdate.getTime());
             data.addRows([[data_crdate, value.fields.send, value.fields.received]]);
           });
 
