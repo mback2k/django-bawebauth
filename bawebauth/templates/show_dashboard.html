@@ -57,6 +57,7 @@
           date_start.setDate(date_end.getDate()-1);
 
           chart.draw(data, {
+            'allowRedraw': true,
             'scaleType': 'maximized',
             'zoomStartTime': date_start,
             'zoomEndTime': date_end,
