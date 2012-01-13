@@ -125,7 +125,8 @@ def sum_usage(request):
         result += "%d\r%s\r%d\r%d\r\n" % (device_id, sum[device_id]['name'], sum[device_id]['send'], sum[device_id]['received'])
     return HttpResponse(result)
 
+@login_required
 def api_device_usages(request, device_id, format='json'):
-    device = get_object_or_404(Device, id=device_id)
+    device = get_object_or_404(Device, user=request.user, id=device_id)
     if not format in ['xml', 'json', 'yaml']: format = 'json'
     return HttpResponse(serializers.serialize(format, device.usages), mimetype='application/%s' % format)
