@@ -27,18 +27,26 @@
     google.setOnLoadCallback(drawChart);
 
     function drawChart() {
-      var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_usage'));
-      var data = new google.visualization.DataTable();
+      $.getJSON('ajax/test.json', function(json) {
+        var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_usage'));
+        var data = new google.visualization.DataTable();
+        var data_latest = new Date(0);
 
-      data.addColumn('datetime', 'Date');
-      data.addColumn('number', 'Send');
-      data.addColumn('number', 'Received');
-      data.addRows([{% for usage in device.usages %}[new Date({{ usage.crdate.year }}, {{ usage.crdate.month }}, {{ usage.crdate.day }}, {{ usage.crdate.hour }}, {{ usage.crdate.minute }}, {{ usage.crdate.second }}), {{ usage.send }}, {{ usage.received }}],{% endfor %}]);
+        data.addColumn('datetime', 'Date');
+        data.addColumn('number', 'Send');
+        data.addColumn('number', 'Received');
 
-      chart.draw(data, {
-        'scaleType': 'maximized',
-        {% if yesterday %}'zoomStartTime': new Date({{ yesterday.year }}, {{ yesterday.month }}, {{ yesterday.day }}, {{ yesterday.hour }}, {{ yesterday.minute }}, {{ yesterday.second }}),{% endif %}
-        {% if today %}'zoomEndTime': new Date({{ today.year }}, {{ today.month }}, {{ today.day }}, {{ today.hour }}, {{ today.minute }}, {{ today.second }}),{% endif %}
+        $.each(json, function(key, value) {
+          var data_crdate = new Date().crdate.setISO8601(value.fields.crdate.replace(/ /, 'T'));
+          data.addRow([data_crdate, value.fields.send, value.fields.received]);
+          if (data_crdate > data_latest) data_latest = data_crdate; 
+        });
+
+        chart.draw(data, {
+          'scaleType': 'maximized',
+          'zoomStartTime': data_latest.setDate(data_latest.getDate()-1),
+          'zoomEndTime': data_latest,
+        });
       });
     }
   </script>
