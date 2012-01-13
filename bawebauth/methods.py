@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.auth import authenticate
+from django.core import serializers
 
 logger = logging.getLogger('django')
 
@@ -123,3 +124,8 @@ def sum_usage(request):
     for device_id in sum:
         result += "%d\r%s\r%d\r%d\r\n" % (device_id, sum[device_id]['name'], sum[device_id]['send'], sum[device_id]['received'])
     return HttpResponse(result)
+
+def api_device_usages(request, device_id, format='json'):
+    device = get_object_or_404(Device, id=device_id)
+    if not format in ['xml', 'json', 'yaml']: format = 'json'
+    return HttpResponse(serializers.serialize(format, device.usages), mimetype='application/%s' % format)

@@ -19,3 +19,7 @@ urlpatterns += patterns('bawebauth.methods',
     (r'^api/restful/usage/list/$', 'list_usage'),
     (r'^api/restful/usage/sum/$', 'sum_usage'),
 )
+
+urlpatterns += patterns('bawebauth.methods',
+    (r'^api/restful/device/(?P<device_id>\d+)/usages.(?P<format>\w+)$', 'api_device_usages'),
+)
