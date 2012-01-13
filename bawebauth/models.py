@@ -17,7 +17,7 @@ class Device(models.Model):
 
     @cache_property
     def usages(self):
-        return self.usage_set.order_by('-crdate')
+        return self.usage_set.order_by('crdate')
         
     @cache_property
     def last_usage(self):
