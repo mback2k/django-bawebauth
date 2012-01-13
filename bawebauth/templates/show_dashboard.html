@@ -37,7 +37,7 @@
         data.addColumn('number', 'Received');
 
         $.each(json, function(key, value) {
-          var data_crdate = new Date().crdate.setISO8601(value.fields.crdate.replace(/ /, 'T'));
+          var data_crdate = new Date().setISO8601(value.fields.crdate.replace(/ /, 'T'));
           data.addRow([data_crdate, value.fields.send, value.fields.received]);
           if (data_crdate > data_latest) data_latest = data_crdate; 
         });
