@@ -28,7 +28,7 @@
 
     function drawChart() {
       $.getJSON('{% url bawebauth.methods.api_device_usages device.id 'json' %}', function(json) {
-        var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_usage'));
+        var chart = new google.visualization.AnnotatedTimeLine($('chart_usage'));
         var data = new google.visualization.DataTable();
         var data_latest = new Date(0);
 
@@ -38,8 +38,8 @@
 
         $.each(json, function(key, value) {
           var data_crdate = new Date().setISO8601(value.fields.crdate.replace(/ /, 'T'));
+          if (data_crdate > data_latest) data_latest = data_crdate;
           data.addRow([data_crdate, value.fields.send, value.fields.received]);
-          if (data_crdate > data_latest) data_latest = data_crdate; 
         });
 
         chart.draw(data, {
