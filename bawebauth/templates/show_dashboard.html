@@ -27,7 +27,7 @@
     google.setOnLoadCallback(drawChart);
 
     function drawChart() {
-      $.getJSON('ajax/test.json', function(json) {
+      $.getJSON('{% url bawebauth.methods.api_device_usages device.id 'json' %}', function(json) {
         var chart = new google.visualization.AnnotatedTimeLine(document.getElementById('chart_usage'));
         var data = new google.visualization.DataTable();
         var data_latest = new Date(0);
