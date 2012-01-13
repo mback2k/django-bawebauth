@@ -5,6 +5,7 @@ from bawebauth.forms import DeviceForm
 from bawebauth.models import User, Device, Usage
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.auth import authenticate
 from django.core import serializers
