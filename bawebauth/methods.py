@@ -105,7 +105,7 @@ def device_usage(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
-    query = Device.objects.order_by('-crdate').filter(user=user)
+    query = Device.objects.order_by('name').filter(user=user)
     if 'device' in data:
         query = query.filter(id=int(data['device']))
     if 'date-start' in data:
