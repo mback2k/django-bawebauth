@@ -3,6 +3,7 @@ from datetime import datetime
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
 from bawebauth.forms import DeviceForm
 from bawebauth.models import User, Device, Usage
+from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
@@ -100,30 +101,23 @@ def list_usage(request):
     return HttpResponse(result)
 
 @csrf_exempt
-def sum_usage(request):
+def device_usage(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
-    query = Usage.objects.order_by('-crdate').filter(user=user)
+    query = Device.objects.order_by('-crdate').filter(user=user)
     if 'device' in data:
-        device = get_object_or_404(Device, id=int(data['device']), user=user)
-        query = query.filter(device=device)
+        query = query.filter(id=int(data['device']))
     if 'date-start' in data:
-        query = query.filter(crdate__gt=datetime.strptime(data['date-start'], '%Y-%m-%d %H:%M:%S'))
+        query = query.filter(usage__crdate__gt=datetime.strptime(data['date-start'], '%Y-%m-%d %H:%M:%S'))
     if 'date-end' in data:
-        query = query.filter(crdate__lt=datetime.strptime(data['date-end'], '%Y-%m-%d %H:%M:%S'))
+        query = query.filter(usage__crdate__lt=datetime.strptime(data['date-end'], '%Y-%m-%d %H:%M:%S'))
+    query = query.annotate(send=Sum('usage__send'), received=Sum('usage__received'))
     if 'max-results' in data: 
         query = query[:int(data['max-results'])]
-    sum = {}
-    for usage in query:
-        if not usage.device.id in sum:
-            sum[usage.device.id] = {'send': 0, 'received': 0}
-        sum[usage.device.id]['name'] = usage.device.name
-        sum[usage.device.id]['send'] += usage.send
-        sum[usage.device.id]['received'] += usage.received
     result = ''
-    for device_id in sum:
-        result += "%d\r%s\r%d\r%d\r\n" % (device_id, sum[device_id]['name'], sum[device_id]['send'], sum[device_id]['received'])
+    for device in query:
+        result += "%d\r%s\r%d\r%d\r\n" % (device.id, device.name, device.send, device.received)
     return HttpResponse(result)
 
 @login_required

@@ -17,7 +17,7 @@ urlpatterns += patterns('bawebauth.methods',
     (r'^api/restful/device/delete/$', 'delete_device'),
     (r'^api/restful/usage/push/$', 'push_usage'),
     (r'^api/restful/usage/list/$', 'list_usage'),
-    (r'^api/restful/usage/sum/$', 'sum_usage'),
+    (r'^api/restful/usage/sum/$', 'device_usage'),
 )
 
 urlpatterns += patterns('bawebauth.methods',
