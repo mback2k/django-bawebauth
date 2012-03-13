@@ -35,14 +35,7 @@ def auth_user(request):
         User.objects.get(username=data['username'])
     except User.DoesNotExist:
         User.objects.create_user(username=data['username'], email='%s@student.dhbw-mannheim.de' % data['username'], password=data['password'])
-    if 'password-change' in data:
-        user = authenticate(username=data['username'], password=data['password-change'])
-        if user:
-            user.set_password(data['password'])
-            if not user.check_password(data['password']):
-                user = None
-    else:
-        user = authenticate(username=data['username'], password=data['password'])
+    user = authenticate(username=data['username'], password=data['password'])
     if user:
         if user.is_active and user.id > 0:
             session['api_restful_userid'] = user.id
@@ -57,6 +50,17 @@ def quit_user(request):
     session = restore_session(request, data['user'])
     session.flush()
     return HttpResponse('1', mimetype="text/plain")
+
+@csrf_exempt
+def chpw_user(request):
+    data = parse_request(request)
+    session = restore_session(request, data['user'])
+    user = get_object_or_404(User, id=int(session['api_restful_userid']))
+    if user.check_password(data['old-password']):
+        user.set_password(data['new-password'])
+    if user.check_password(data['new-password']):
+        return HttpResponse('1', mimetype="text/plain")
+    return HttpResponse('0', mimetype="text/plain")
 
 @csrf_exempt
 def create_device(request):
