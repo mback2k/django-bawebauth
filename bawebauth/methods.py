@@ -35,7 +35,14 @@ def auth_user(request):
         User.objects.get(username=data['username'])
     except User.DoesNotExist:
         User.objects.create_user(username=data['username'], email='%s@student.dhbw-mannheim.de' % data['username'], password=data['password'])
-    user = authenticate(username=data['username'], password=data['password'])
+    if 'password-change' in data:
+        user = authenticate(username=data['username'], password=data['password-change'])
+        if user:
+            user.set_password(data['password'])
+            if not user.check_password(data['password']):
+                user = None
+    else:
+        user = authenticate(username=data['username'], password=data['password'])
     if user:
         if user.is_active and user.id > 0:
             session['api_restful_userid'] = user.id
