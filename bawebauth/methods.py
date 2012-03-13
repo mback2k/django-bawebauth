@@ -56,9 +56,8 @@ def chpw_user(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
-    if user.check_password(data['old-password']):
-        user.set_password(data['new-password'])
-    if user.check_password(data['new-password']):
+    user.set_password(data['password'])
+    if user.check_password(data['password']):
         return HttpResponse('1', mimetype="text/plain")
     return HttpResponse('0', mimetype="text/plain")
 
