@@ -1,0 +1,14 @@
+@charset "UTF-8";
+
+@media all {
+  textarea, pre, code, kbd, samp, var, tt {
+    font-family: "Consolas", "Lucida Console", "Andale Mono", "Bitstream Vera Sans Mono", "Courier New", "Courier";
+  }
+  body {
+    font-family: "Arial", "Helvetica", "sans-serif";
+  }
+
+  .ym-button {
+    margin-top: 0;
+  }
+}

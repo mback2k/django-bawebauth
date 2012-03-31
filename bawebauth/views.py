@@ -70,8 +70,9 @@ def delete_device(request, device_id):
 def delete_device_ask(request, device_id):
     devices = Device.objects.all().filter(user=request.user).order_by('name')
     device = get_object_or_404(Device, user=request.user, id=device_id)
-    
-    messages.warning(request, 'Do you want to delete device "%s"? <a href="%s" title="Yes">Yes</a>' % (device, reverse('bawebauth.views.delete_device', kwargs={'device_id': device.id})))
+
+    button = '<a class="ym-button ym-delete float-right" href="%s" title="Yes">Yes</a>' % reverse('bawebauth.views.delete_device', kwargs={'device_id': device.id})     
+    messages.warning(request, '%sDo you want to delete device "%s"?' % (button, device))
     
     template_values = {
         'devices': devices,

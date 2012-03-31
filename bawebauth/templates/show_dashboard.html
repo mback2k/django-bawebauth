@@ -1,27 +1,25 @@
 {% extends "base.html" %}
 
 {% block navigation %}
-  <div class="hlist"><ul>
-    <li><a href="{% url bawebauth.views.show_home %}" title="Home">Home</a></li>
-    <li class="active"><strong>Dashboard</strong></li>
-  </ul></div>
+  <li><a href="{% url bawebauth.views.show_home %}" title="Home">Home</a></li>
+  <li class="active"><strong>Dashboard</strong></li>
 {% endblock %}
 
 {% block content %}
   {% if device %}
   {% if device_edit_form %}
-  <form action="{% url bawebauth.views.edit_device device.id %}" method="post" class="yform columnar">{% csrf_token %}
-  <fieldset>
-    <legend><img src="{{ STATIC_URL }}icons/pencil.png" alt="" /> <strong>Edit Device:</strong></legend>
+  <form action="{% url bawebauth.views.edit_device device.id %}" method="post" class="ym-form ym-columnar">
+    {% csrf_token %}
+    <h6>Edit Device:</h6>
     {{ device_edit_form.as_yaml }}
-    <div class="type-button">
-      <input type="submit" name="submit" value="Save Device" />
-      <a href="{% url bawebauth.views.show_dashboard %}" title="Close"><input type="button" name="close" value="Close" /></a>
+    <div class="ym-fbox-button">
+      <input class="ym-button" type="submit" name="submit" value="Save Device" />
+      <a class="ym-button" href="{% url bawebauth.views.show_dashboard %}" title="Close">Close</a>
     </div>
-  </fieldset>
   </form>
   {% else %}
-  <div id="chart_usage" style="width: 652px; height: 280px;"></div><br />
+  <h3>{{ device.name }}</h3>
+  <div style="margin-right: 2.5em;"><div id="chart_usage" style="width: 100%; height: 280px;"></div></div><br />
   <script type='text/javascript'>
     google.load('visualization', '1', {'packages': ['annotatedtimeline']});
     google.setOnLoadCallback(function() {
@@ -68,7 +66,7 @@
   </script>
   {% endif %}
   {% endif %}
-  <table class="full">
+  <table class="bordertable">
     <tbody>
       <tr>
         <th scope="col">Name</th>
@@ -81,7 +79,7 @@
         <td><a href="{% url bawebauth.views.show_device device.id %}" title="{{ device.name }}">{{ device.name }}</a></td>
         <td>{% if device.last_usage and device.last_usage.crdate %}{{ device.last_usage.crdate|localedatetime }}{% else %}None{% endif %}</td>
         <td></td>
-        <td>{% if device.running %}<img src="{{ STATIC_URL }}icons/loading.gif" alt="{{ device.status }}" title="{{ device.status }}" />{% else %}<a href="{% url bawebauth.views.edit_device device.id %}" title="Edit"><img src="{{ STATIC_URL }}icons/pencil.png" alt="Edit" /></a><a href="{% url bawebauth.views.delete_device_ask device.id %}" title="Delete"><img src="{{ STATIC_URL }}icons/delete.png" alt="Delete" /></a>{% endif %}</td>
+        <td><a class="ym-button ym-edit" href="{% url bawebauth.views.edit_device device.id %}" title="Edit">Edit</a><a class="ym-button ym-delete" href="{% url bawebauth.views.delete_device_ask device.id %}" title="Delete">Delete</a></td>
       </tr>
       {% endfor %}
     </tbody>

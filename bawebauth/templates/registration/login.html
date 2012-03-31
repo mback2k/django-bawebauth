@@ -2,27 +2,33 @@
 {% load url from future %}
 
 {% block content %}
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="yform" id="login">
-{% csrf_token %}
-  <fieldset>
-    <legend>Login</legend>
-    <div class="type-text{% if form.errors %} error{% endif %}">
-      {% if form.errors %}<strong class="message">Your username and password didn't match. Please try again.</strong>{% endif %}
-      {{ form.username.label_tag }}
-      {{ form.username }}
-    </div>
-    <div class="type-text{% if form.errors %} error{% endif %}">
-      {{ form.password.label_tag }}
-      {{ form.password }}
-    </div>
-  </fieldset>
-  <div class="type-button">
-    <input type="submit" value="Login" />
+<form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="ym-form ym-columnar" id="login">
+  {% csrf_token %}
+  <h6>Login</h6>
+  <div class="ym-fbox-text{% if form.errors %} ym-error{% endif %}">
+    {% if form.errors %}<strong class="ym-message">Your username and password didn't match. Please try again.</strong>{% endif %}
+    {{ form.username.label_tag }}
+    {{ form.username }}
+  </div>
+  <div class="ym-fbox-text{% if form.errors %} ym-error{% endif %}">
+    {{ form.password.label_tag }}
+    {{ form.password }}
+  </div>
+  <div class="ym-fbox-button">
+    <input class="ym-button" type="submit" value="Login" />
     <input type="hidden" name="next" value="{{ next }}" />
   </div>
+  <div class="box warning">
+    This form uses a client-side hash algorithm, please activate JavaScript!
+  </div>
+  <style type="text/css">
+    form#login .box.warning { display: none; }
+  </style>
   <noscript>
-    <style type="text/css">form#login .type-button { display: none; }</style>
-    <strong class="message">This form uses a client-side hash algorithm, please activate JavaScript!</strong>
+    <style type="text/css">
+      form#login .ym-fbox-button { display: none; }
+      form#login .box.warning { display: block; }
+    </style>
   </noscript>
 </form>
 <script type="text/javascript" src="{{ STATIC_URL }}js/crypto-min.js"></script>
