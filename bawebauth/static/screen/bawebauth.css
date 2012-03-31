@@ -15,6 +15,14 @@
     background-color: #433; /* #E2001A */
   }
 
+  a {
+    color: #E2001A;
+  }
+  a:hover, a:focus {
+    background-color: #E2001A;
+    color: #FFF;
+  }
+
   .ym-button {
     margin-top: 0;
   }
