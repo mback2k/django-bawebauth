@@ -13,12 +13,12 @@
     <h6>Edit Device:</h6>
     {{ device_edit_form.as_yaml }}
     <div class="ym-fbox-button">
-      <input class="ym-button" type="submit" name="submit" value="Save Device" />
-      <a class="ym-button" href="{% url bawebauth.views.show_dashboard %}" title="Close">Close</a>
+      <input class="ym-button ym-save" type="submit" name="submit" value="Save Device" />
+      <a class="ym-button ym-next" href="{% url bawebauth.views.show_dashboard %}" title="Go Back">Go Back</a>
     </div>
   </form>
   {% else %}
-  <a class="ym-button ym-next float-right" href="{% url bawebauth.views.show_dashboard %}" title="Close">Close</a>
+  <a class="ym-button ym-next float-right" href="{% url bawebauth.views.show_dashboard %}" title="Go Back">Go Back</a>
   <h3>{{ device.name }}</h3>
   <div style="margin-right: 2.5em;"><div id="chart_usage" style="width: 100%; height: 280px;"></div></div><br />
   <script type='text/javascript'>
