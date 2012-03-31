@@ -11,4 +11,7 @@
   .ym-button {
     margin-top: 0;
   }
+  .box .ym-button {
+    margin-top: -0.5em;
+  }
 }
