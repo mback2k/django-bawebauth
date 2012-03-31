@@ -8,6 +8,13 @@
     font-family: "Arial", "Helvetica", "sans-serif";
   }
 
+  header {
+    background-color: #8E1016;
+  }
+  nav, .ym-hlist {
+    background-color: #433; /* #E2001A */
+  }
+
   .ym-button {
     margin-top: 0;
   }
