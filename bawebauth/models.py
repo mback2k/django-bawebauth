@@ -18,10 +18,22 @@ class Device(models.Model):
     @cache_property
     def usages(self):
         return self.usage_set.order_by('crdate')
-        
+
     @cache_property
     def last_usage(self):
         return self.usage_set.latest('crdate')
+
+    @cache_property
+    def send(self):
+        return self.usage_set.aggregate(send=models.Sum('send'))['send']
+
+    @cache_property
+    def received(self):
+        return self.usage_set.aggregate(received=models.Sum('received'))['received']
+
+    @cache_property
+    def total(self):
+        return self.send + self.received
 
 class Usage(models.Model):
     user = models.ForeignKey(User)
