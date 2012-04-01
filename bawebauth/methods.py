@@ -5,10 +5,13 @@ from bawebauth.forms import DeviceForm
 from bawebauth.models import User, Device, Usage
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
+from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.auth import authenticate
+from django.contrib.sites.models import Site
+from django.core.urlresolvers import reverse
 from django.core import serializers
 
 logger = logging.getLogger('django')
@@ -27,6 +30,25 @@ def restore_session(request, session):
         request.session = SessionStore(session_key=session)
     return request.session
 
+def create_password(user):
+    current_site = Site.objects.get_current()
+    website_link = 'https://%s%s' % (current_site.domain, reverse('bawebauth.views.show_home'))
+    random_password = get_random_string()    
+    user.set_password(random_password)
+    user.save()
+    user.email_user('BaWebAuth - Login using your new password',
+                    'You logged in using BaWebAuth for the very first time.\n' \
+                    'A new account has been setup to allow you to measure the total traffic of your devices:\n\n' \
+                    'Username: %s\n' \
+                    'Password: %s\n\n' \
+                    'You can login at %s and manage your devices.' % (user.username, random_password, website_link))
+    return user
+    
+def create_user(username):
+    mail = '%s@student.dhbw-mannheim.de' % data['username']
+    user = User.objects.create_user(username=data['username'], email=mail)
+    return create_password(user)
+
 @csrf_exempt
 def auth_user(request):
     data = parse_request(request)
@@ -34,8 +56,7 @@ def auth_user(request):
     try:
         user = User.objects.get(username=data['username'])
     except User.DoesNotExist:
-        mail = '%s@student.dhbw-mannheim.de' % data['username']
-        user = User.objects.create_user(username=data['username'], email=mail)
+        user = create_user(data['username'])
     if user and user.is_active:
         session['api_restful_userid'] = user.id
         session.modified = True
