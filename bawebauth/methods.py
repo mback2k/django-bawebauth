@@ -79,6 +79,12 @@ def create_device(request):
         return HttpResponseForbidden('', mimetype="text/plain")
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     device, created = Device.objects.get_or_create(user=user, ident=data['ident'], defaults={'name': data['name']})
+    if created:
+        current_site = Site.objects.get_current()
+        website_link = 'https://%s%s' % (current_site.domain, reverse('bawebauth.views.show_dashboard'))
+        user.email_user('BaWebAuth - Please activate your new device',
+                        'A new device named "%s" has been used with your account.\n\n' \
+                        'Please go to %s and activate your devices.' % (device.name, website_link))
     return HttpResponse('%d' % device.id, mimetype="text/plain")
 
 @csrf_exempt
