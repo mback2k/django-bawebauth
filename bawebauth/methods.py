@@ -54,6 +54,8 @@ def quit_user(request):
 def create_device(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
+    if not 'api_restful_userid' in session:
+        return HttpResponseForbidden('', mimetype="text/plain")
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     device, created = Device.objects.get_or_create(user=user, ident=data['ident'], defaults={'name': data['name']})
     return HttpResponse('%d' % device.id, mimetype="text/plain")
@@ -62,6 +64,8 @@ def create_device(request):
 def delete_device(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
+    if not 'api_restful_userid' in session:
+        return HttpResponseForbidden('', mimetype="text/plain")
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     device = get_object_or_404(Device, id=int(data['device']), user=user, ident=data['ident'])
     device.delete()
@@ -71,6 +75,8 @@ def delete_device(request):
 def push_usage(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
+    if not 'api_restful_userid' in session:
+        return HttpResponseForbidden('', mimetype="text/plain")
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     device = get_object_or_404(Device, id=int(data['device']), user=user, ident=data['ident'])
     if not device.active or not device.enabled:
@@ -85,6 +91,8 @@ def push_usage(request):
 def list_usage(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
+    if not 'api_restful_userid' in session:
+        return HttpResponseForbidden('', mimetype="text/plain")
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     query = Usage.objects.order_by('-crdate').filter(device__user=user).filter(device__enabled=True)
     if 'device' in data:
@@ -105,6 +113,8 @@ def list_usage(request):
 def device_usage(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
+    if not 'api_restful_userid' in session:
+        return HttpResponseForbidden('', mimetype="text/plain")
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     query = Device.objects.order_by('name').filter(user=user).filter(enabled=True)
     if 'device' in data:
