@@ -1,22 +1,33 @@
 {% extends "base.html" %}
 {% load url from future %}
 
+{% block navigation %}
+  <li><a href="{% url 'bawebauth.views.show_home' %}" title="Home">Home</a></li>
+  {% if user.is_authenticated %}
+  <li><a href="{% url 'bawebauth.views.show_dashboard' %}" title="Dashboard">Dashboard</a></li>
+  <li><a href="{% url 'django.contrib.auth.views.password_change' %}" title="Change Password">Change Password</a></li>
+  {% endif %}
+{% endblock %}
+
 {% block content %}
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}" class="ym-form ym-columnar" id="login">
-  {% csrf_token %}
-  <h6>Login</h6>
-  <div class="ym-fbox-text{% if form.errors %} ym-error{% endif %}">
-    {% if form.errors %}<strong class="ym-message">Your username and password didn't match. Please try again.</strong>{% endif %}
-    {{ form.username.label_tag }}
-    {{ form.username }}
-  </div>
-  <div class="ym-fbox-text{% if form.errors %} ym-error{% endif %}">
-    {{ form.password.label_tag }}
-    {{ form.password }}
-  </div>
-  <div class="ym-fbox-button">
-    <input class="ym-button" type="submit" value="Login" />
-    <input type="hidden" name="next" value="{{ next }}" />
-  </div>
-</form>
+  <form method="post" action="" class="ym-form ym-columnar">
+    {% csrf_token %}
+    <h6>Login</h6>
+    <div class="ym-fbox-text{% if form.errors or form.username.errors %} ym-error{% endif %}">
+      {% if form.errors %}<strong class="ym-message">Your username and password didn't match. Please try again.</strong>{% endif %}
+      {% if form.username.errors %}<strong class="ym-message">{{ form.username.errors|striptags }}</strong>{% endif %}
+      {{ form.username.label_tag }}
+      {{ form.username }}
+    </div>
+    <div class="ym-fbox-text{% if form.errors or form.password.errors %} ym-error{% endif %}">
+      {% if form.password.errors %}<strong class="ym-message">{{ form.password.errors|striptags }}</strong>{% endif %}
+      {{ form.password.label_tag }}
+      {{ form.password }}
+    </div>
+    <div class="ym-fbox-button">
+      <input class="ym-button" type="submit" value="Login" />
+      <input type="hidden" name="next" value="{{ next }}" />
+      <a class="ym-button ym-next" href="{% url 'django.contrib.auth.views.password_reset' %}">Reset Password</a>
+    </div>
+  </form>
 {% endblock %}
