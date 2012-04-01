@@ -4,7 +4,7 @@ from bawebauth.models import Device, Usage
 @task()
 def task_start_worker():
     for device in Device.objects.all():
-    	task_reduce_device.apply_async(args=[device.id])
+        task_reduce_device.apply_async(args=[device.id])
 
 @task()
 def task_reduce_device(device_id):
