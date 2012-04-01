@@ -18,53 +18,5 @@
     <input class="ym-button" type="submit" value="Login" />
     <input type="hidden" name="next" value="{{ next }}" />
   </div>
-  <div class="box warning">
-    This form uses a client-side hash algorithm, please activate JavaScript!
-  </div>
-  <style type="text/css">
-    form#login .box.warning { display: none; }
-  </style>
-  <noscript>
-    <style type="text/css">
-      form#login .ym-fbox-button { display: none; }
-      form#login .box.warning { display: block; }
-    </style>
-  </noscript>
 </form>
-<script type="text/javascript" src="{{ STATIC_URL }}js/crypto-min.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/crypto-sha1.js"></script>
-<script type="text/javascript">
-$(document).ready(function(){
-  $('form#login').submit(function () {
-    var username = $('input#id_username');
-    var password = $('input#id_password');
-    for (var i = 0; i <= 10; i++) {
-      // Encode the dynamic UTF-8 string as fixed length UTF-16LE / UCS-2
-      var string = username.val()+':'+password.val();
-      var inbytes = Crypto.charenc.UTF8.stringToBytes(string);
-      var outbytes = new Array(string.length*2);
-      for (var j = 0, k = 0; j < inbytes.length;) {
-        if ((inbytes[j] & 0xE0) == 0xE0) {
-          outbytes[k+1] = ((inbytes[j] & 0x0F) << 4) | ((inbytes[j+1] & 0x3C) >> 2);
-          outbytes[k] = ((inbytes[j+1] & 0x03) << 6) | (inbytes[j+2] & 0x3F);
-          j = j + 3;
-          k = k + 2;
-        } else if ((inbytes[j] & 0xC0) == 0xC0) {
-          outbytes[k+1] = ((inbytes[j] & 0x07) >> 2);
-          outbytes[k] = ((inbytes[j] & 0x03) << 6) | (inbytes[j+1] & 0x3F);
-          j = j + 2;
-          k = k + 2;
-        } else {
-          outbytes[k+1] = 0;
-          outbytes[k] = inbytes[j];
-          j = j + 1;
-          k = k + 2;
-        }
-      }
-      // Hash the password using the username as salt
-      password.val(Crypto.SHA1(outbytes));
-    }
-  });
-});
-</script>
 {% endblock %}

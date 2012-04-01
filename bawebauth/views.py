@@ -53,6 +53,23 @@ def edit_device(request, device_id):
     return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
 
 @login_required
+def switch_device(request, device_id):
+    devices = Device.objects.all().filter(user=request.user).order_by('name')
+    device = get_object_or_404(Device, user=request.user, id=device_id)
+    device.enabled = not(device.enabled)
+    device.active = True
+    device.save()
+    
+    messages.success(request, 'Switched device "%s" %s!' % (device, 'on' if device.enabled else 'off'))
+    
+    template_values = {
+        'devices': devices,
+        'device': device,
+    }
+
+    return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
+
+@login_required
 def delete_device(request, device_id):
     devices = Device.objects.all().filter(user=request.user).order_by('name')
     device = get_object_or_404(Device, user=request.user, id=device_id)

@@ -80,7 +80,16 @@
         <td><a href="{% url bawebauth.views.show_device device.id %}" title="{{ device.name }}">{{ device.name }}</a></td>
         <td>{% if device.last_usage and device.last_usage.crdate %}{{ device.last_usage.crdate|localedatetime }}{% else %}None{% endif %}</td>
         <td>{{ device.total|filesizeformat }}<br />{{ device.send|filesizeformat }} &uArr; | {{ device.received|filesizeformat }} &dArr;</td>
-        <td><a class="ym-button ym-edit" href="{% url bawebauth.views.edit_device device.id %}" title="Edit">Edit</a><a class="ym-button ym-delete" href="{% url bawebauth.views.delete_device_ask device.id %}" title="Delete">Delete</a></td>
+        <td>
+          {% if device.active %}
+          <a class="ym-button ym-edit" href="{% url bawebauth.views.edit_device device.id %}" title="Edit">Edit</a>
+          <a class="ym-button ym-{% if not device.enabled %}enable{% else %}disable{% endif %}" href="{% url bawebauth.views.switch_device device.id %}" title="{% if not device.enabled %}Enable{% else %}Disable{% endif %}">{% if not device.enabled %}Enable{% else %}Disable{% endif %}</a>
+          <a class="ym-button ym-delete" href="{% url bawebauth.views.delete_device_ask device.id %}" title="Delete">Delete</a>
+          {% else %}
+          <a class="ym-button ym-save" href="{% url bawebauth.views.switch_device device.id %}" title="Activate">Activate</a>
+          <a class="ym-button ym-delete" href="{% url bawebauth.views.delete_device device.id %}" title="Delete">Delete</a>
+          {% endif %}
+        </td>
       </tr>
       {% endfor %}
     </tbody>

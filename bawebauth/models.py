@@ -11,6 +11,8 @@ class Device(models.Model):
     ident = models.CharField(_('ident'), max_length=40)
     crdate = models.DateTimeField(_('date created'), auto_now_add=True)
     tstamp = models.DateTimeField(_('date edited'), auto_now=True)
+    active = models.BooleanField(_('active'), default=False)
+    enabled = models.BooleanField(_('enabled'), default=False)
     
     def __unicode__(self):
         return self.name
@@ -36,7 +38,6 @@ class Device(models.Model):
         return self.send + self.received
 
 class Usage(models.Model):
-    user = models.ForeignKey(User)
     device = models.ForeignKey(Device)
     send = models.IntegerField(_('bytes send'))
     received = models.IntegerField(_('bytes received'))

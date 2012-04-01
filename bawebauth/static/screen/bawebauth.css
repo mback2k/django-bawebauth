@@ -29,4 +29,7 @@
   .box .ym-button {
     margin-top: -0.5em;
   }
+
+  .ym-enable:before { content: "\2611"; }
+  .ym-disable:before { content: "\2610"; }
 }

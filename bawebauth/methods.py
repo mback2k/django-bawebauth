@@ -32,15 +32,14 @@ def auth_user(request):
     data = parse_request(request)
     session = request.session
     try:
-        User.objects.get(username=data['username'])
+        user = User.objects.get(username=data['username'])
     except User.DoesNotExist:
-        User.objects.create_user(username=data['username'], email='%s@student.dhbw-mannheim.de' % data['username'], password=data['password'])
-    user = authenticate(username=data['username'], password=data['password'])
-    if user:
-        if user.is_active and user.id > 0:
-            session['api_restful_userid'] = user.id
-            session.modified = True
-            return HttpResponse('%s' % session.session_key, mimetype="text/plain")
+        mail = '%s@student.dhbw-mannheim.de' % data['username']
+        user = User.objects.create_user(username=data['username'], email=mail)
+    if user and user.is_active:
+        session['api_restful_userid'] = user.id
+        session.modified = True
+        return HttpResponse('%s' % session.session_key, mimetype="text/plain")
     session.flush()
     return HttpResponseForbidden('', mimetype="text/plain")
 
@@ -50,16 +49,6 @@ def quit_user(request):
     session = restore_session(request, data['user'])
     session.flush()
     return HttpResponse('1', mimetype="text/plain")
-
-@csrf_exempt
-def chpw_user(request):
-    data = parse_request(request)
-    session = restore_session(request, data['user'])
-    user = get_object_or_404(User, id=int(session['api_restful_userid']))
-    user.set_password(data['password'])
-    if user.check_password(data['password']):
-        return HttpResponse('1', mimetype="text/plain")
-    return HttpResponse('0', mimetype="text/plain")
 
 @csrf_exempt
 def create_device(request):
@@ -84,10 +73,12 @@ def push_usage(request):
     session = restore_session(request, data['user'])
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     device = get_object_or_404(Device, id=int(data['device']), user=user, ident=data['ident'])
+    if not device.active or not device.enabled:
+        return HttpResponse('0', mimetype="text/plain")
     if 'date' in data:
-        usage = Usage.objects.create(user=user, device=device, send=int(data['bytes-send']), received=int(data['bytes-received']), crdate=datetime.strptime(data['date'], '%Y-%m-%d %H:%M:%S'))
+        usage = Usage.objects.create(device=device, send=int(data['bytes-send']), received=int(data['bytes-received']), crdate=datetime.strptime(data['date'], '%Y-%m-%d %H:%M:%S'))
     else:
-        usage = Usage.objects.create(user=user, device=device, send=int(data['bytes-send']), received=int(data['bytes-received']))
+        usage = Usage.objects.create(device=device, send=int(data['bytes-send']), received=int(data['bytes-received']))
     return HttpResponse('%d' % usage.id, mimetype="text/plain")
 
 @csrf_exempt
@@ -95,7 +86,7 @@ def list_usage(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
-    query = Usage.objects.order_by('-crdate').filter(user=user)
+    query = Usage.objects.order_by('-crdate').filter(device__user=user).filter(device__enabled=True)
     if 'device' in data:
         device = get_object_or_404(Device, id=int(data['device']), user=user)
         query = query.filter(device=device)
@@ -115,19 +106,19 @@ def device_usage(request):
     data = parse_request(request)
     session = restore_session(request, data['user'])
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
-    query = Device.objects.order_by('name').filter(user=user)
+    query = Device.objects.order_by('name').filter(user=user).filter(enabled=True)
     if 'device' in data:
         query = query.filter(id=int(data['device']))
     if 'date-start' in data:
         query = query.filter(usage__crdate__gt=datetime.strptime(data['date-start'], '%Y-%m-%d %H:%M:%S'))
     if 'date-end' in data:
         query = query.filter(usage__crdate__lt=datetime.strptime(data['date-end'], '%Y-%m-%d %H:%M:%S'))
-    query = query.annotate(send=Sum('usage__send'), received=Sum('usage__received'))
+    query = query.annotate(join_send=Sum('usage__send'), join_received=Sum('usage__received'))
     if 'max-results' in data: 
         query = query[:int(data['max-results'])]
     result = ''
     for device in query:
-        result += "%d\r%s\r%d\r%d\r\n" % (device.id, device.name, device.send, device.received)
+        result += "%d\r%s\r%d\r%d\r\n" % (device.id, device.name, device.join_send, device.join_received)
     return HttpResponse(result)
 
 @login_required
