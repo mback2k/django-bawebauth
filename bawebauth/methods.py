@@ -45,8 +45,8 @@ def create_password(user):
     return user
     
 def create_user(username):
-    mail = '%s@student.dhbw-mannheim.de' % data['username']
-    user = User.objects.create_user(username=data['username'], email=mail)
+    mail = '%s@student.dhbw-mannheim.de' % username
+    user = User.objects.create_user(username=username, email=mail)
     return create_password(user)
 
 @csrf_exempt
