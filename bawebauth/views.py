@@ -62,12 +62,7 @@ def switch_device(request, device_id):
     
     messages.success(request, 'Switched device "%s" %s!' % (device, 'on' if device.enabled else 'off'))
     
-    template_values = {
-        'devices': devices,
-        'device': device,
-    }
-
-    return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
+    return HttpResponseRedirect(reverse('bawebauth.views.show_device', kwargs={'device_id': device.id}))
 
 @login_required
 def delete_device(request, device_id):
