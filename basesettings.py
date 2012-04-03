@@ -68,7 +68,18 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'compressor.finders.CompressorFinder',
+)
+
+COMPRESS_OFFLINE = True
+COMPRESS_PARSER = 'compressor.parser.HtmlParser'
+COMPRESS_OUTPUT_DIR = 'cache'
+COMPRESS_CSS_FILTERS = (
+    'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.cssmin.CSSMinFilter',
+)
+COMPRESS_JS_FILTERS = (
+    'compressor.filters.jsmin.JSMinFilter',
 )
 
 ROOT_URLCONF = 'urls'
@@ -90,6 +101,8 @@ INSTALLED_APPS = (
 
     'django.contrib.admin',
     'django.contrib.admindocs',
+
+    'compressor',
 )
 
 MIDDLEWARE_CLASSES = (
