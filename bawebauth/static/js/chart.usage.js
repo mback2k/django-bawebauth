@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  if (typeof charts == 'undefined') return;
   $.each(charts || {}, function(key, value) {
     $.getJSON(value, function(json) {
       var chart = new google.visualization.AnnotatedTimeLine(document.getElementById(key));
