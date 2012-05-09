@@ -60,6 +60,7 @@ def auth_user(request):
     if user and user.is_active:
         session['api_restful_userid'] = user.id
         session.modified = True
+        session.save()
         return HttpResponse('%s' % session.session_key, mimetype="text/plain")
     session.flush()
     return HttpResponseForbidden('', mimetype="text/plain")
