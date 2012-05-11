@@ -1,6 +1,11 @@
 $(document).ready(function() {
   $('.highchart').each(function(index, chart) {
+    $(chart).progressbar({
+      value: 5
+    });
     $.getJSON($(chart).attr('href'), function(json) {
+      $(chart).progressbar({value: 10});
+
       var options = {
         chart: {
           renderTo: $(chart).attr('id'),
@@ -88,8 +93,12 @@ $(document).ready(function() {
 
         options.series[0].data.push([data_crdate.getTime(), value.fields.send]);
         options.series[1].data.push([data_crdate.getTime(), value.fields.received]);
+
+        console.log(((key/json.length)*80)+10);
+        $(chart).progressbar({value: ((key/json.length)*80)+10});
       });
 
+      $(chart).progressbar({value: 90});
       $(chart).data('highchart', new Highcharts.Chart(options));
     });
   });

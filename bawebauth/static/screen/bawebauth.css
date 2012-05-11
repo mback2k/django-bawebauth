@@ -32,4 +32,12 @@
 
   .ym-enable:before { content: "\2611"; }
   .ym-disable:before { content: "\2610"; }
+
+  .ui-progressbar-value {
+    border: 1px solid #433;
+    background-color: #8E1016;
+    height: 10%;
+    width: 80%;
+    margin: 10%;
+  }
 }
