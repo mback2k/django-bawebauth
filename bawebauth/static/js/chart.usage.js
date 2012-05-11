@@ -15,7 +15,6 @@ $(document).ready(function() {
           text: 'Traffic Usage'
         },
         xAxis: {
-          text: 'Usage in Bytes',
           type: 'datetime',
           maxZoom: 30000,
           dateTimeLabelFormats: { // don't display the dummy year
@@ -29,7 +28,10 @@ $(document).ready(function() {
           }
         },
         yAxis: {
-          min: 0
+          min: 0,
+          title: {
+            text: 'Usage in Bytes'
+          }
         },
         plotOptions: {
           areaspline: {
@@ -55,8 +57,7 @@ $(document).ready(function() {
             }
           }
         },
-        series: [
-          {
+        series: [{
             name: 'Send',
             data: [],
             fillColor: {
@@ -65,8 +66,7 @@ $(document).ready(function() {
                 [1, 'rgba(0,0,0,0)']
               ]
             }
-          },
-          {
+          }, {
             name: 'Received',
             data: [],
             fillColor: {
