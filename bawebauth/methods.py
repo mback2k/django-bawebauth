@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
-from bawebauth.forms import DeviceForm
 from bawebauth.models import User, Device, Usage
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
@@ -9,7 +8,6 @@ from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.decorators import login_required
 from django.contrib.sessions.backends.db import SessionStore
-from django.contrib.auth import authenticate
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.core import serializers
