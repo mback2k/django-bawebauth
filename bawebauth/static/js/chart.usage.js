@@ -113,13 +113,14 @@ $(document).ready(function() {
         queue.queue('stack', function() {
           var crdate = new Date().setISO8601(point.fields.crdate).getTime();
           if (previous != null && ((crdate - previous) > 600000)) {
-            var fix1 = [previous - 1000, null];
-            var fix2 = [previous + 1000, null];
-
-            options.series[0].data.push(fix1);
-            options.series[0].data.push(fix2);
-            options.series[1].data.push(fix1);
-            options.series[1].data.push(fix2);
+            var fixes = [
+              [previous - 300000, null],
+              [previous + 300000, null]
+            ];
+            $.each(fixes, function(index, fix) {
+              options.series[0].data.push(fix);
+              options.series[1].data.push(fix);
+            });
           }
           previous = crdate;
 
