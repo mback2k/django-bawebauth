@@ -1,9 +1,9 @@
 $(document).ready(function() {
-  $('.highchart').each(function(index, chart) {
+  $('.chart.usage').each(function(index, chart) {
     chart = $(chart);
 
     $.getJSON(chart.attr('href'), function(json) {
-      chart.css('width', '100%').css('height', '280px').css('opacity', 0).progressbar({value: 0});
+      chart.css('width', '100%').css('height', '400px').css('opacity', 0).progressbar({value: 0});
 
       var options = {
         chart: {
@@ -32,6 +32,33 @@ $(document).ready(function() {
           title: {
             text: 'Usage in Bytes'
           }
+        },
+        rangeSelector: {
+          buttons: [{
+            type: 'day',
+            count: 3,
+            text: '3d'
+          }, {
+            type: 'week',
+            count: 1,
+            text: '1w'
+          }, {
+            type: 'month',
+            count: 1,
+            text: '1m'
+          }, {
+            type: 'month',
+            count: 6,
+            text: '6m'
+          }, {
+            type: 'year',
+            count: 1,
+            text: '1y'
+          }, {
+            type: 'all',
+            text: 'All'
+          }],
+          selected: 1
         },
         plotOptions: {
           areaspline: {
@@ -109,7 +136,7 @@ $(document).ready(function() {
       });
 
       queue.queue('stack', function() {
-        chart.data('highchart', new Highcharts.Chart(options)).css('opacity', 1);
+        chart.data('highchart', new Highcharts.StockChart(options)).css('opacity', 1);
       });
 
       queue.dequeue('stack');
