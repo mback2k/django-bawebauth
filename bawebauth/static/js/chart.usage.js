@@ -12,7 +12,7 @@ $(document).ready(function() {
         },
         xAxis: {
           type: 'datetime',
-          maxZoom: 300000,
+          maxZoom: 30000,
           dateTimeLabelFormats: { // don't display the dummy year
             second: '%H:%M:%S',
             minute: '%H:%M',
@@ -74,22 +74,15 @@ $(document).ready(function() {
         ]
       };
 
-      var data_latest = new Date(0);
       var data_previous = null;
 
       $.each(json, function(key, value) {
-        var data_crdate = new Date(); data_crdate.setISO8601(value.fields.crdate.replace(/ /, 'T'));
-        if (data_crdate > data_latest) data_latest = new Date(data_crdate.getTime());
-        if (data_previous != null && ((data_crdate - data_previous) > (1000 * 60 * 10))) {
-          var data_fix1 = new Date(data_previous.getTime());
-          var data_fix2 = new Date(data_crdate.getTime());
-          data_fix1.setMinutes(data_previous.getMinutes()+5);
-          data_fix2.setMinutes(data_crdate.getMinutes()-5);
-
-          options.series[0].data.push([data_fix1.getTime(), 0]);
-          options.series[1].data.push([data_fix1.getTime(), 0]);
-          options.series[0].data.push([data_fix2.getTime(), 0]);
-          options.series[1].data.push([data_fix2.getTime(), 0]);
+        var data_crdate = new Date(); data_crdate.setISO8601(value.fields.crdate);
+        if (data_previous != null && ((data_crdate.getTime() - data_previous.getTime()) > 600000)) {
+          options.series[0].data.push([data_previous.getTime()-1000, null]);
+          options.series[0].data.push([data_previous.getTime()+1000, null]);
+          options.series[1].data.push([data_previous.getTime()-1000, null]);
+          options.series[1].data.push([data_previous.getTime()+1000, null]);
         }
         data_previous = new Date(data_crdate.getTime());
 
@@ -97,12 +90,7 @@ $(document).ready(function() {
         options.series[1].data.push([data_crdate.getTime(), value.fields.received]);
       });
 
-      var date_start = new Date(data_latest.getTime());
-      var date_end = new Date(data_latest.getTime());
-
-      date_start.setDate(date_end.getDate()-1);
-
-      new Highcharts.Chart(options);
+      $(chart).data('highchart', new Highcharts.Chart(options));
     });
   });
 });
