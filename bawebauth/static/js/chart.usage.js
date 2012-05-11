@@ -3,7 +3,7 @@ $(document).ready(function() {
     chart = $(chart);
 
     $.getJSON(chart.attr('href'), function(json) {
-      chart.animate({'width': '100%', 'height': '280px'}).css('opacity', 0).progressbar({value: 0});
+      chart.css('width', '100%').css('height', '280px').css('opacity', 0).progressbar({value: 0});
 
       var options = {
         chart: {
