@@ -1,14 +1,14 @@
 $(document).ready(function() {
   $('.highchart').each(function(index, chart) {
-    $(chart).progressbar({
-      value: 5
-    });
-    $.getJSON($(chart).attr('href'), function(json) {
-      $(chart).progressbar({value: 10});
+    chart = $(chart);
+    chart.progressbar({value: 5});
+
+    $.getJSON(chart.attr('href'), function(json) {
+      chart.progressbar({value: 10});
 
       var options = {
         chart: {
-          renderTo: $(chart).attr('id'),
+          renderTo: chart.attr('id'),
           zoomType: 'x',
           type: 'areaspline'
         },
@@ -79,27 +79,40 @@ $(document).ready(function() {
         ]
       };
 
-      var data_previous = null;
+      var queue = $({});
+      var previous = null;
 
-      $.each(json, function(key, value) {
-        var data_crdate = new Date(); data_crdate.setISO8601(value.fields.crdate);
-        if (data_previous != null && ((data_crdate.getTime() - data_previous.getTime()) > 600000)) {
-          options.series[0].data.push([data_previous.getTime()-1000, null]);
-          options.series[0].data.push([data_previous.getTime()+1000, null]);
-          options.series[1].data.push([data_previous.getTime()-1000, null]);
-          options.series[1].data.push([data_previous.getTime()+1000, null]);
-        }
-        data_previous = new Date(data_crdate.getTime());
+      $.each(json, function(index, point) {
+        queue.queue('stack', function() {
+          var crdate = new Date().setISO8601(point.fields.crdate).getTime();
+          if (previous != null && ((crdate - previous) > 600000)) {
+            var fix1 = [previous - 1000, null];
+            var fix2 = [previous + 1000, null];
 
-        options.series[0].data.push([data_crdate.getTime(), value.fields.send]);
-        options.series[1].data.push([data_crdate.getTime(), value.fields.received]);
+            options.series[0].data.push(fix1);
+            options.series[0].data.push(fix2);
+            options.series[1].data.push(fix1);
+            options.series[1].data.push(fix2);
+          }
+          previous = crdate;
 
-        console.log(((key/json.length)*80)+10);
-        $(chart).progressbar({value: ((key/json.length)*80)+10});
+          options.series[0].data.push([crdate, point.fields.send]);
+          options.series[1].data.push([crdate, point.fields.received]);
+
+          chart.progressbar({value: ((index / json.length) * 80) + 10});
+
+          setTimeout(function() {
+            queue.dequeue('stack');
+          }, 1);
+        });
       });
 
-      $(chart).progressbar({value: 90});
-      $(chart).data('highchart', new Highcharts.Chart(options));
+      queue.queue('stack', function() {
+        chart.progressbar({value: 95});
+        chart.data('highchart', new Highcharts.Chart(options));
+      });
+
+      queue.dequeue('stack');
     });
   });
 });

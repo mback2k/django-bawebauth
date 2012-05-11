@@ -36,8 +36,8 @@
   .ui-progressbar-value {
     border: 1px solid #433;
     background-color: #8E1016;
+    position: relative;
     height: 10%;
-    width: 80%;
-    margin: 10%;
+    top: 40%;
   }
 }
