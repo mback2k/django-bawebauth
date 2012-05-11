@@ -102,9 +102,9 @@ $(document).ready(function() {
           var progress = index / json.length;
           chart.css('opacity', progress).progressbar({value: progress*100});
 
-          setTimeout(function() {
+          window.setZeroTimeout(function() {
             queue.dequeue('stack');
-          }, 1);
+          });
         });
       });
 
