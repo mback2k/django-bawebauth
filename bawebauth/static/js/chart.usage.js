@@ -1,10 +1,9 @@
 $(document).ready(function() {
   $('.highchart').each(function(index, chart) {
     chart = $(chart);
-    chart.progressbar({value: 5});
 
     $.getJSON(chart.attr('href'), function(json) {
-      chart.progressbar({value: 10});
+      chart.animate({'width': '100%', 'height': '280px'}).css('opacity', 0).progressbar({value: 0});
 
       var options = {
         chart: {
@@ -16,6 +15,7 @@ $(document).ready(function() {
           text: 'Traffic Usage'
         },
         xAxis: {
+          text: 'Usage in Bytes',
           type: 'datetime',
           maxZoom: 30000,
           dateTimeLabelFormats: { // don't display the dummy year
@@ -99,7 +99,8 @@ $(document).ready(function() {
           options.series[0].data.push([crdate, point.fields.send]);
           options.series[1].data.push([crdate, point.fields.received]);
 
-          chart.progressbar({value: ((index / json.length) * 80) + 10});
+          var progress = index / json.length;
+          chart.css('opacity', progress).progressbar({value: progress*100});
 
           setTimeout(function() {
             queue.dequeue('stack');
@@ -108,8 +109,7 @@ $(document).ready(function() {
       });
 
       queue.queue('stack', function() {
-        chart.progressbar({value: 95});
-        chart.data('highchart', new Highcharts.Chart(options));
+        chart.data('highchart', new Highcharts.Chart(options)).css('opacity', 1);
       });
 
       queue.dequeue('stack');

@@ -24,7 +24,13 @@
   {% else %}
   <a class="ym-button ym-next float-right" href="{% url 'bawebauth.views.show_dashboard' %}" title="Go Back">Go Back</a>
   <h3>{{ device.name }}</h3>
-  <div class="highchart" id="chart_usage_{{ device.id }}" href="{% url 'bawebauth.methods.api_device_usages' device.id 'json' %}" style="width: 100%; height: 280px;"></div><br />
+  <div class="highchart" id="chart_usage_{{ device.id }}" href="{% url 'bawebauth.methods.api_device_usages' device.id 'json' %}">
+    <noscript>
+      <div class="box warning">
+        <p>You need to enable JavaScript in order to see the traffic usage graph.</p>
+      </div>
+    </noscript>
+  </div><br />
   {% endif %}
   {% endif %}
   <table class="bordertable">
