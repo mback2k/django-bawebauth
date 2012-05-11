@@ -1,8 +1,7 @@
 $(document).ready(function() {
-  if (typeof charts == 'undefined') return;
-  $.each(charts || {}, function(key, value) {
-    $.getJSON(value, function(json) {
-      var chart = new google.visualization.AnnotatedTimeLine(document.getElementById(key));
+  $('.highchart').each(function(index, chart) {
+    $.getJSON($(chart).attr('href'), function(json) {
+      chart = new google.visualization.AnnotatedTimeLine(chart);
       var data = new google.visualization.DataTable();
       var data_latest = new Date(0);
       var data_previous = null;
