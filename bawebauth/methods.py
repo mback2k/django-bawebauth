@@ -1,3 +1,4 @@
+import re
 import logging
 from datetime import datetime
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
@@ -43,7 +44,10 @@ def create_password(user):
     return user
     
 def create_user(username):
-    mail = '%s@student.dhbw-mannheim.de' % username
+    if re.search(r's\d{6}', username):
+        mail = '%s@student.dhbw-mannheim.de' % username
+    else:
+        mail = '%s@dhbw-mannheim.de' % username
     user = User.objects.create_user(username=username, email=mail)
     return create_password(user)
 
