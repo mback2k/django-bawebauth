@@ -161,6 +161,7 @@ LOGGING = {
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+LOGOUT_URL = '/logout/'
 
 CELERY_RESULT_BACKEND = 'djcelery.backends.database.DatabaseBackend'
 CELERY_TRACK_STARTED = True
