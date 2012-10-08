@@ -3,18 +3,8 @@ from django.db import models
 from django.core.cache import cache
 from django.contrib.auth.models import User
 from bawebauth.decorators import cache_property
+from bawebauth.fields import PositiveBigIntegerField
 from django.utils.translation import ugettext_lazy as _
-
-class PositiveBigIntegerField(models.PositiveIntegerField):
-    """Represents MySQL's unsigned BIGINT data type (works with MySQL only!)"""
-    empty_strings_allowed = False
-
-    def get_internal_type(self):
-        return "PositiveBigIntegerField"
-
-    def db_type(self):
-        # This is how MySQL defines 64 bit unsigned integer data types
-        return "BIGINT UNSIGNED"
 
 class Device(models.Model):
     user = models.ForeignKey(User)
