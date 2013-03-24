@@ -1,8 +1,4 @@
-from celery.schedules import crontab
-import djcelery
 import os.path
-
-djcelery.setup_loader()
 
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
@@ -87,7 +83,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 
     'south',
-    'djcelery',
 
     'yamlcss',
     'jdatetime',
@@ -163,16 +158,3 @@ LOGGING = {
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_URL = '/logout/'
-
-CELERY_RESULT_BACKEND = 'djcelery.backends.database.DatabaseBackend'
-CELERY_TRACK_STARTED = True
-CELERY_SEND_EVENTS = True
-CELERY_SEND_TASK_SENT_EVENT = True
-
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-CELERYBEAT_SCHEDULE = {
-    'start-workers': {
-        'task': 'bawebauth.tasks.task_start_worker',
-        'schedule': crontab(hour=0),
-    },
-}
