@@ -2,9 +2,9 @@
 from django.db import models
 from django.core.cache import cache
 from django.contrib.auth.models import User
-from bawebauth.decorators import cache_property
-from bawebauth.fields import PositiveBigIntegerField
 from django.utils.translation import ugettext_lazy as _
+from .fields import PositiveBigIntegerField
+from .decorators import cache_property
 
 class Device(models.Model):
     user = models.ForeignKey(User)

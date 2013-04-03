@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django import forms
-from bawebauth.models import Device
+from .models import Device
 
 class DeviceForm(forms.ModelForm):
     name = forms.CharField(required=True,

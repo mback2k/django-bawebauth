@@ -1,8 +1,5 @@
-import re
-import logging
-from datetime import datetime
+# -*- coding: utf-8 -*-
 from django.http import HttpResponse, HttpResponseForbidden, HttpResponseBadRequest
-from bawebauth.models import User, Device, Usage
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
@@ -12,6 +9,10 @@ from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.core import serializers
+from .models import User, Device, Usage
+from datetime import datetime
+import logging
+import re
 
 logger = logging.getLogger('django')
 
@@ -31,7 +32,7 @@ def restore_session(request, session):
 
 def create_password(user):
     current_site = Site.objects.get_current()
-    website_link = 'https://%s%s' % (current_site.domain, reverse('bawebauth.views.show_home'))
+    website_link = 'https://%s%s' % (current_site.domain, reverse('bawebauth:show_home'))
     random_password = get_random_string()    
     user.set_password(random_password)
     user.save()
@@ -84,7 +85,7 @@ def create_device(request):
     device, created = Device.objects.get_or_create(user=user, ident=data['ident'], defaults={'name': data['name']})
     if created:
         current_site = Site.objects.get_current()
-        website_link = 'https://%s%s' % (current_site.domain, reverse('bawebauth.views.show_dashboard'))
+        website_link = 'https://%s%s' % (current_site.domain, reverse('bawebauth:show_dashboard'))
         user.email_user('BaWebAuth - Please activate your new device',
                         'A new device named "%s" has been used with your account.\n\n' \
                         'Please go to %s and activate your devices.' % (device.name, website_link))

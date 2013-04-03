@@ -3,9 +3,9 @@
 {% load yamlform %}
 
 {% block navigation %}
-  <li><a href="{% url 'bawebauth.views.show_home' %}" title="Home">Home</a></li>
+  <li><a href="{% url 'bawebauth:show_home' %}" title="Home">Home</a></li>
   {% if user.is_authenticated %}
-  <li><a href="{% url 'bawebauth.views.show_dashboard' %}" title="Dashboard">Dashboard</a></li>
+  <li><a href="{% url 'bawebauth:show_dashboard' %}" title="Dashboard">Dashboard</a></li>
   <li><a href="{% url 'django.contrib.auth.views.password_change' %}" title="Change Password">Change Password</a></li>
   {% endif %}
 {% endblock %}

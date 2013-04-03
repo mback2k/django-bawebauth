@@ -3,7 +3,7 @@
 {% load yamlform %}
 
 {% block navigation %}
-  <li><a href="{% url 'bawebauth.views.show_home' %}" title="Home">Home</a></li>
+  <li><a href="{% url 'bawebauth:show_home' %}" title="Home">Home</a></li>
   {% if user.is_authenticated %}
   <li class="active"><strong>Dashboard</strong></li>
   <li><a href="{% url 'django.contrib.auth.views.password_change' %}" title="Change Password">Change Password</a></li>
@@ -13,20 +13,20 @@
 {% block content %}
   {% if device %}
   {% if device_edit_form %}
-  <form action="{% url 'bawebauth.views.edit_device' device.id %}" method="post" class="ym-form ym-columnar">
+  <form action="{% url 'bawebauth:edit_device' device.id %}" method="post" class="ym-form ym-columnar">
     {% csrf_token %}
     <h6>Edit Device:</h6>
     {{ device_edit_form|yamlform }}
     <div class="ym-fbox-button">
       <input class="ym-button ym-save" type="submit" name="submit" value="Save Device" />
-      <a class="ym-button ym-next" href="{% url 'bawebauth.views.show_dashboard' %}" title="Go Back">Go Back</a>
+      <a class="ym-button ym-next" href="{% url 'bawebauth:show_dashboard' %}" title="Go Back">Go Back</a>
     </div>
   </form>
   {% else %}
-  <a class="ym-button ym-next float-right" href="{% url 'bawebauth.views.show_dashboard' %}" title="Go Back">Go Back</a>
+  <a class="ym-button ym-next float-right" href="{% url 'bawebauth:show_dashboard' %}" title="Go Back">Go Back</a>
   <h3>{{ device.name }}</h3>
   <div class="chart usage" id="chart_usage_{{ device.id }}">
-    <a href="{% url 'bawebauth.methods.api_device_usages' device.id 'json' %}"></a>
+    <a href="{% url 'bawebauth:api_device_usages' device.id 'json' %}"></a>
     <noscript>
       <div class="box warning">
         <p>You need to enable JavaScript in order to see the traffic usage graph.</p>
@@ -45,17 +45,17 @@
       </tr>
       {% for device in devices %}
       <tr>
-        <td><a href="{% url 'bawebauth.views.show_device' device.id %}" title="{{ device.name }}">{{ device.name }}</a></td>
+        <td><a href="{% url 'bawebauth:show_device' device.id %}" title="{{ device.name }}">{{ device.name }}</a></td>
         <td>{% if device.last_usage and device.last_usage.crdate %}{{ device.last_usage.crdate|localedatetime }}{% else %}None{% endif %}</td>
         <td>{{ device.total|filesizeformat }}<br />{{ device.send|filesizeformat }} &uArr; | {{ device.received|filesizeformat }} &dArr;</td>
         <td>
           {% if device.active %}
-          <a class="ym-button ym-edit" href="{% url 'bawebauth.views.edit_device' device.id %}" title="Edit">Edit</a>
-          <a class="ym-button ym-{% if not device.enabled %}enable{% else %}disable{% endif %}" href="{% url 'bawebauth.views.switch_device' device.id %}" title="{% if not device.enabled %}Enable{% else %}Disable{% endif %}">{% if not device.enabled %}Enable{% else %}Disable{% endif %}</a>
-          <a class="ym-button ym-delete" href="{% url 'bawebauth.views.delete_device_ask' device.id %}" title="Delete">Delete</a>
+          <a class="ym-button ym-edit" href="{% url 'bawebauth:edit_device' device.id %}" title="Edit">Edit</a>
+          <a class="ym-button ym-{% if not device.enabled %}enable{% else %}disable{% endif %}" href="{% url 'bawebauth:switch_device' device.id %}" title="{% if not device.enabled %}Enable{% else %}Disable{% endif %}">{% if not device.enabled %}Enable{% else %}Disable{% endif %}</a>
+          <a class="ym-button ym-delete" href="{% url 'bawebauth:delete_device_ask' device.id %}" title="Delete">Delete</a>
           {% else %}
-          <a class="ym-button ym-save" href="{% url 'bawebauth.views.switch_device' device.id %}" title="Activate">Activate</a>
-          <a class="ym-button ym-delete" href="{% url 'bawebauth.views.delete_device' device.id %}" title="Delete">Delete</a>
+          <a class="ym-button ym-save" href="{% url 'bawebauth:switch_device' device.id %}" title="Activate">Activate</a>
+          <a class="ym-button ym-delete" href="{% url 'bawebauth:delete_device' device.id %}" title="Delete">Delete</a>
           {% endif %}
         </td>
       </tr>

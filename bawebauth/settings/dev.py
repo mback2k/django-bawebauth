@@ -1,4 +1,4 @@
-from basesettings import *
+from .common import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -19,9 +19,6 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
     'django.template.loaders.app_directories.Loader',
 )
-
-INSTALLED_APPS += ('djkombu',)
-BROKER_TRANSPORT = 'djkombu.transport.DatabaseTransport'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'THIS_IS_A_DEVELOPMENT_KEY_WHICH_SHOULD_NOT_BE_USED_IN_PRODUCTION!'

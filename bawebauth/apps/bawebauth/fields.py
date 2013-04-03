@@ -13,4 +13,4 @@ class PositiveBigIntegerField(models.PositiveIntegerField):
         return "BIGINT UNSIGNED"
 
 from south.modelsinspector import add_introspection_rules
-add_introspection_rules([], ['^bawebauth\.fields\.PositiveBigIntegerField'])
+add_introspection_rules([], ['bawebauth\.fields\.PositiveBigIntegerField'])

@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 from django.contrib import admin
-from bawebauth.models import Device, Usage
+from .models import Device, Usage
 
 class DeviceAdmin(admin.ModelAdmin):
     fields = ('user', 'name', 'ident')
