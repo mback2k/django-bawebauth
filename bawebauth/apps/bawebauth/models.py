@@ -4,7 +4,6 @@ from django.core.cache import cache
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 from .fields import PositiveBigIntegerField
-from .decorators import cache_property
 
 class Device(models.Model):
     user = models.ForeignKey(User)
@@ -14,27 +13,27 @@ class Device(models.Model):
     tstamp = models.DateTimeField(_('date edited'), auto_now=True)
     active = models.BooleanField(_('active'), default=False)
     enabled = models.BooleanField(_('enabled'), default=False)
-    
+
     def __unicode__(self):
         return self.name
 
-    @cache_property
+    @property
     def usages(self):
         return self.usage_set.order_by('crdate')
 
-    @cache_property
+    @property
     def last_usage(self):
         return self.usage_set.latest('crdate')
 
-    @cache_property
+    @property
     def send(self):
         return self.usage_set.aggregate(send=models.Sum('send'))['send']
 
-    @cache_property
+    @property
     def received(self):
         return self.usage_set.aggregate(received=models.Sum('received'))['received']
 
-    @cache_property
+    @property
     def total(self):
         return self.send + self.received
 
@@ -43,6 +42,6 @@ class Usage(models.Model):
     send = PositiveBigIntegerField(_('bytes send'))
     received = PositiveBigIntegerField(_('bytes received'))
     crdate = models.DateTimeField(_('date created'), auto_now_add=True)
-    
+
     def __unicode__(self):
         return u'%s %s+ %s-' % (self.crdate, self.send, self.received)
