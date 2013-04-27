@@ -55,32 +55,50 @@ def create_user(username):
 @csrf_exempt
 def auth_user(request):
     data = parse_request(request)
+    if not 'username' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+
     session = request.session
     try:
         user = User.objects.get(username=data['username'])
     except User.DoesNotExist:
         user = create_user(data['username'])
+
     if user and user.is_active:
         session['api_restful_userid'] = user.id
         session.modified = True
         session.save()
-        return HttpResponse('%s' % session.session_key, mimetype="text/plain")
+        return HttpResponse('%s' % session.session_key, mimetype='text/plain')
+
     session.flush()
-    return HttpResponseForbidden('', mimetype="text/plain")
+
+    return HttpResponseForbidden('', mimetype='text/plain')
 
 @csrf_exempt
 def quit_user(request):
     data = parse_request(request)
+    if not 'user' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+
     session = restore_session(request, data['user'])
     session.flush()
-    return HttpResponse('1', mimetype="text/plain")
+
+    return HttpResponse('1', mimetype='text/plain')
 
 @csrf_exempt
 def create_device(request):
     data = parse_request(request)
+    if not 'user' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+    if not 'name' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+    if not 'ident' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+
     session = restore_session(request, data['user'])
     if not 'api_restful_userid' in session:
-        return HttpResponseForbidden('', mimetype="text/plain")
+        return HttpResponseForbidden('', mimetype='text/plain')
+
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     device, created = Device.objects.get_or_create(user=user, ident=data['ident'], defaults={'name': data['name']})
     if created:
@@ -89,41 +107,69 @@ def create_device(request):
         user.email_user('BaWebAuth - Please activate your new device',
                         'A new device named "%s" has been used with your account.\n\n' \
                         'Please go to %s and activate your devices.' % (device.name, website_link))
-    return HttpResponse('%d' % device.id, mimetype="text/plain")
+
+    return HttpResponse('%d' % device.id, mimetype='text/plain')
 
 @csrf_exempt
 def delete_device(request):
     data = parse_request(request)
+    if not 'user' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+    if not 'ident' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+    if not 'device' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+
     session = restore_session(request, data['user'])
     if not 'api_restful_userid' in session:
-        return HttpResponseForbidden('', mimetype="text/plain")
+        return HttpResponseForbidden('', mimetype='text/plain')
+
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     device = get_object_or_404(Device, id=int(data['device']), user=user, ident=data['ident'])
     device.delete()
-    return HttpResponse('1', mimetype="text/plain")
+
+    return HttpResponse('1', mimetype='text/plain')
 
 @csrf_exempt
 def push_usage(request):
     data = parse_request(request)
+    if not 'user' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+    if not 'ident' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+    if not 'device' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+    if not 'bytes-send' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+    if not 'bytes-received' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+
     session = restore_session(request, data['user'])
     if not 'api_restful_userid' in session:
-        return HttpResponseForbidden('', mimetype="text/plain")
+        return HttpResponseForbidden('', mimetype='text/plain')
+
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     device = get_object_or_404(Device, id=int(data['device']), user=user, ident=data['ident'])
     if not device.active or not device.enabled:
-        return HttpResponse('0', mimetype="text/plain")
+        return HttpResponse('0', mimetype='text/plain')
+
     if 'date' in data:
         usage = Usage.objects.create(device=device, send=int(data['bytes-send']), received=int(data['bytes-received']), crdate=datetime.strptime(data['date'], '%Y-%m-%d %H:%M:%S'))
     else:
         usage = Usage.objects.create(device=device, send=int(data['bytes-send']), received=int(data['bytes-received']))
-    return HttpResponse('%d' % usage.id, mimetype="text/plain")
+
+    return HttpResponse('%d' % usage.id, mimetype='text/plain')
 
 @csrf_exempt
 def list_usage(request):
     data = parse_request(request)
+    if not 'user' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+
     session = restore_session(request, data['user'])
     if not 'api_restful_userid' in session:
-        return HttpResponseForbidden('', mimetype="text/plain")
+        return HttpResponseForbidden('', mimetype='text/plain')
+
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     query = Usage.objects.order_by('-crdate').filter(device__user=user).filter(device__enabled=True)
     if 'device' in data:
@@ -135,17 +181,23 @@ def list_usage(request):
         query = query.filter(crdate__lt=datetime.strptime(data['date-end'], '%Y-%m-%d %H:%M:%S'))
     if 'max-results' in data: 
         query = query[:int(data['max-results'])]
+
     result = ''
     for usage in query:
         result += "%d\r%s\r%d\r%d\r%s\r\n" % (usage.device.id, usage.device.name, usage.send, usage.received, usage.crdate.strftime('%Y-%m-%d %H:%M:%S'))
+
     return HttpResponse(result)
 
 @csrf_exempt
 def device_usage(request):
     data = parse_request(request)
+    if not 'user' in data:
+        return HttpResponseBadRequest('', mimetype='text/plain')
+
     session = restore_session(request, data['user'])
     if not 'api_restful_userid' in session:
-        return HttpResponseForbidden('', mimetype="text/plain")
+        return HttpResponseForbidden('', mimetype='text/plain')
+
     user = get_object_or_404(User, id=int(session['api_restful_userid']))
     query = Device.objects.order_by('name').filter(user=user).filter(enabled=True)
     if 'device' in data:
@@ -157,9 +209,11 @@ def device_usage(request):
     query = query.annotate(join_send=Sum('usage__send'), join_received=Sum('usage__received'))
     if 'max-results' in data: 
         query = query[:int(data['max-results'])]
+
     result = ''
     for device in query:
         result += "%d\r%s\r%d\r%d\r\n" % (device.id, device.name, device.join_send, device.join_received)
+
     return HttpResponse(result)
 
 @login_required
