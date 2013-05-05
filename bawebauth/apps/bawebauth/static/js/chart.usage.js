@@ -108,31 +108,33 @@ $(document).ready(function() {
 
       var queue = $({});
       var previous = null;
+      var callback = function(index, point) {
+        var crdate = new Date().setISO8601(point.fields.crdate).getTime();
+        if (previous != null && ((crdate - previous) > 600000)) {
+          var a = previous + 300000;
+          var b = crdate - 300000;
+
+          options.series[0].data.push([a, null]);
+          options.series[1].data.push([a, null]);
+          options.series[0].data.push([b, null]);
+          options.series[1].data.push([b, null]);
+        }
+        previous = crdate;
+
+        options.series[0].data.push([crdate, point.fields.send]);
+        options.series[1].data.push([crdate, point.fields.received]);
+
+        var progress = index / json.length;
+        chart.css('opacity', progress).progressbar({value: progress*100});
+
+        window.setZeroTimeout(function() {
+          queue.dequeue('stack');
+        });
+      };
 
       $.each(json, function(index, point) {
         queue.queue('stack', function() {
-          var crdate = new Date().setISO8601(point.fields.crdate).getTime();
-          if (previous != null && ((crdate - previous) > 600000)) {
-            var fixes = [
-              [previous - 300000, null],
-              [previous + 300000, null]
-            ];
-            $.each(fixes, function(index, fix) {
-              options.series[0].data.push(fix);
-              options.series[1].data.push(fix);
-            });
-          }
-          previous = crdate;
-
-          options.series[0].data.push([crdate, point.fields.send]);
-          options.series[1].data.push([crdate, point.fields.received]);
-
-          var progress = index / json.length;
-          chart.css('opacity', progress).progressbar({value: progress*100});
-
-          window.setZeroTimeout(function() {
-            queue.dequeue('stack');
-          });
+          callback(index, point);
         });
       });
 
