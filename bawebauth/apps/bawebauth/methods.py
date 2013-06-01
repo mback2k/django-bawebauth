@@ -33,7 +33,7 @@ def restore_session(request, session):
 def create_password(user):
     current_site = Site.objects.get_current()
     website_link = 'https://%s%s' % (current_site.domain, reverse('bawebauth:show_home'))
-    random_password = get_random_string()    
+    random_password = get_random_string()
     user.set_password(random_password)
     user.save()
     user.email_user('BaWebAuth - Login using your new password',
@@ -43,7 +43,7 @@ def create_password(user):
                     'Password: %s\n\n' \
                     'You can login at %s and manage your devices.' % (user.username, random_password, website_link))
     return user
-    
+
 def create_user(username):
     if re.search(r's\d{6}', username):
         mail = '%s@student.dhbw-mannheim.de' % username
@@ -179,7 +179,7 @@ def list_usage(request):
         query = query.filter(crdate__gt=datetime.strptime(data['date-start'], '%Y-%m-%d %H:%M:%S'))
     if 'date-end' in data:
         query = query.filter(crdate__lt=datetime.strptime(data['date-end'], '%Y-%m-%d %H:%M:%S'))
-    if 'max-results' in data: 
+    if 'max-results' in data:
         query = query[:int(data['max-results'])]
 
     result = ''
@@ -207,7 +207,7 @@ def device_usage(request):
     if 'date-end' in data:
         query = query.filter(usage__crdate__lt=datetime.strptime(data['date-end'], '%Y-%m-%d %H:%M:%S'))
     query = query.annotate(join_send=Sum('usage__send'), join_received=Sum('usage__received'))
-    if 'max-results' in data: 
+    if 'max-results' in data:
         query = query[:int(data['max-results'])]
 
     result = ''
