@@ -60,9 +60,9 @@ def auth_user(request):
 
     session = request.session
     try:
-        user = User.objects.get(username=data['username'])
+        user = User.objects.get(username=data['username'].lower())
     except User.DoesNotExist:
-        user = create_user(data['username'])
+        user = create_user(data['username'].lower())
 
     if user and user.is_active:
         session['api_restful_userid'] = user.id
