@@ -13,10 +13,10 @@
 {% block content %}
   <form method="post" action="" class="ym-form ym-columnar">
     {% csrf_token %}
-    <h6>Login</h6>
+    <h6 class="ym-fbox-heading">Login</h6>
     {{ form|yamlform }}
-    <div class="ym-fbox-button">
-      <input class="ym-button" type="submit" value="Login" />
+    <div class="ym-fbox-footer ym-fbox-button">
+      <input class="ym-button ym-primary" type="submit" value="Login" />
       <input type="hidden" name="next" value="{{ next }}" />
       <a class="ym-button ym-next" href="{% url 'django.contrib.auth.views.password_reset' %}">Reset Password</a>
     </div>

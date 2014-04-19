@@ -15,10 +15,10 @@
   {% if device_edit_form %}
   <form action="{% url 'bawebauth:edit_device' device.id %}" method="post" class="ym-form ym-columnar">
     {% csrf_token %}
-    <h6>Edit Device:</h6>
+    <h6 class="ym-fbox-heading">Edit Device:</h6>
     {{ device_edit_form|yamlform }}
-    <div class="ym-fbox-button">
-      <input class="ym-button ym-save" type="submit" name="submit" value="Save Device" />
+    <div class="ym-fbox-footer ym-fbox-button">
+      <input class="ym-button ym-save ym-primary" type="submit" name="submit" value="Save Device" />
       <a class="ym-button ym-next" href="{% url 'bawebauth:show_dashboard' %}" title="Go Back">Go Back</a>
     </div>
   </form>
@@ -51,11 +51,11 @@
         <td>
           {% if device.active %}
           <a class="ym-button ym-edit" href="{% url 'bawebauth:edit_device' device.id %}" title="Edit">Edit</a>
-          <a class="ym-button ym-{% if not device.enabled %}enable{% else %}disable{% endif %}" href="{% url 'bawebauth:switch_device' device.id %}" title="{% if not device.enabled %}Enable{% else %}Disable{% endif %}">{% if not device.enabled %}Enable{% else %}Disable{% endif %}</a>
-          <a class="ym-button ym-delete" href="{% url 'bawebauth:delete_device_ask' device.id %}" title="Delete">Delete</a>
+          <a class="ym-button {% if not device.enabled %}ym-enable ym-success{% else %}ym-disable ym-warning{% endif %}" href="{% url 'bawebauth:switch_device' device.id %}" title="{% if not device.enabled %}Enable{% else %}Disable{% endif %}">{% if not device.enabled %}Enable{% else %}Disable{% endif %}</a>
+          <a class="ym-button ym-delete ym-danger" href="{% url 'bawebauth:delete_device_ask' device.id %}" title="Delete">Delete</a>
           {% else %}
-          <a class="ym-button ym-save" href="{% url 'bawebauth:switch_device' device.id %}" title="Activate">Activate</a>
-          <a class="ym-button ym-delete" href="{% url 'bawebauth:delete_device' device.id %}" title="Delete">Delete</a>
+          <a class="ym-button ym-save ym-success" href="{% url 'bawebauth:switch_device' device.id %}" title="Activate">Activate</a>
+          <a class="ym-button ym-delete ym-danger" href="{% url 'bawebauth:delete_device' device.id %}" title="Delete">Delete</a>
           {% endif %}
         </td>
       </tr>
