@@ -10,8 +10,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'south',
-
     'bawebauth.libs.yamlcss',
     'bawebauth.libs.jdatetime',
 
