@@ -1,5 +1,4 @@
 Django==1.7
-South==1.0
 django-compressor==1.4
 django-redis==3.7.1
 pytz
