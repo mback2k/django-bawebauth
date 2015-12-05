@@ -3,6 +3,7 @@
 *.pyc
 *.pyo
 *.tmp
+.DS_Store
 _static
 devdatabase.sqlite
 desktop.ini
