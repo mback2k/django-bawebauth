@@ -10,4 +10,12 @@
 
 {% block content %}
   <p>This service allows you to view the traffic used at the DHBW Mannheim while using the BaWebAuth client.</p>
+  <div class="chart usage" id="chart_usages">
+    <a href="{% url 'bawebauth:api_usages' 'json' %}"></a>
+    <noscript>
+      <div class="box warning">
+        <p>You need to enable JavaScript in order to see the traffic usage graph.</p>
+      </div>
+    </noscript>
+  </div><br />
 {% endblock %}

@@ -4,13 +4,15 @@ from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import condition
 from django.contrib.auth.decorators import login_required
 from django.contrib.sessions.backends.db import SessionStore
 from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.core import serializers
+from django.utils import timezone
 from .models import User, Device, Usage
-from datetime import datetime
+import datetime
 import logging
 import re
 
@@ -154,7 +156,8 @@ def push_usage(request):
         return HttpResponse('0', content_type='text/plain')
 
     if 'date' in data:
-        usage = Usage.objects.create(device=device, send=int(data['bytes-send']), received=int(data['bytes-received']), crdate=datetime.strptime(data['date'], '%Y-%m-%d %H:%M:%S'))
+        crdate = datetime.datetime.strptime(data['date'], '%Y-%m-%d %H:%M:%S')
+        usage = Usage.objects.create(device=device, send=int(data['bytes-send']), received=int(data['bytes-received']), crdate=crdate)
     else:
         usage = Usage.objects.create(device=device, send=int(data['bytes-send']), received=int(data['bytes-received']))
 
@@ -176,9 +179,11 @@ def list_usage(request):
         device = get_object_or_404(Device, id=int(data['device']), user=user)
         query = query.filter(device=device)
     if 'date-start' in data:
-        query = query.filter(crdate__gt=datetime.strptime(data['date-start'], '%Y-%m-%d %H:%M:%S'))
+        date_start = datetime.datetime.strptime(data['date-start'], '%Y-%m-%d %H:%M:%S')
+        query = query.filter(crdate__gt=date_start)
     if 'date-end' in data:
-        query = query.filter(crdate__lt=datetime.strptime(data['date-end'], '%Y-%m-%d %H:%M:%S'))
+        date_end = datetime.datetime.strptime(data['date-end'], '%Y-%m-%d %H:%M:%S')
+        query = query.filter(crdate__lt=date_end)
     if 'max-results' in data:
         query = query[:int(data['max-results'])]
 
@@ -203,9 +208,11 @@ def device_usage(request):
     if 'device' in data:
         query = query.filter(id=int(data['device']))
     if 'date-start' in data:
-        query = query.filter(usage__crdate__gt=datetime.strptime(data['date-start'], '%Y-%m-%d %H:%M:%S'))
+        date_start = datetime.datetime.strptime(data['date-start'], '%Y-%m-%d %H:%M:%S')
+        query = query.filter(usage__crdate__gt=date_start)
     if 'date-end' in data:
-        query = query.filter(usage__crdate__lt=datetime.strptime(data['date-end'], '%Y-%m-%d %H:%M:%S'))
+        date_end = datetime.datetime.strptime(data['date-end'], '%Y-%m-%d %H:%M:%S')
+        query = query.filter(usage__crdate__lt=date_end)
     query = query.annotate(join_send=Sum('usage__send'), join_received=Sum('usage__received'))
     if 'max-results' in data:
         query = query[:int(data['max-results'])]
@@ -216,9 +223,29 @@ def device_usage(request):
 
     return HttpResponse(result)
 
+
+def api_usages_etag(request, format='json'):
+    if not format in ['xml', 'json', 'yaml']:
+        return None
+    return 'id-%d' % Usage.objects.latest('crdate').id
+
+def api_usages_last_modified(request, format='json'):
+    if not format in ['xml', 'json', 'yaml']:
+        return None
+    return Usage.objects.latest('crdate').crdate
+
+@condition(etag_func=api_usages_etag, last_modified_func=api_usages_last_modified)
+def api_usages(request, format='json'):
+    if not format in ['xml', 'json', 'yaml']:
+        return HttpResponseBadRequest()
+    usages = Usage.objects.filter(crdate__gt=timezone.now()-datetime.timedelta(days=30)).order_by('crdate')
+    output = serializers.serialize(format, usages, fields=('send', 'received', 'crdate'))
+    return HttpResponse(output, content_type='application/%s' % format)
+
 @login_required
 def api_device_usages(request, device_id, format='json'):
     device = get_object_or_404(Device, user=request.user, id=device_id)
     if not format in ['xml', 'json', 'yaml']:
         return HttpResponseBadRequest()
-    return HttpResponse(serializers.serialize(format, device.usages), content_type='application/%s' % format)
+    content = serializers.serialize(format, device.usages)
+    return HttpResponse(content, content_type='application/%s' % format)

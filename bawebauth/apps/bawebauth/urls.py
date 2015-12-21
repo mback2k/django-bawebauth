@@ -23,5 +23,6 @@ urlpatterns += patterns('',
 )
 
 urlpatterns += patterns('',
+    url(r'^api/restful/usages\.(?P<format>\w+)$', methods.api_usages, name='api_usages'),
     url(r'^api/restful/device/(?P<device_id>\d+)/usages\.(?P<format>\w+)$', methods.api_device_usages, name='api_device_usages'),
 )
