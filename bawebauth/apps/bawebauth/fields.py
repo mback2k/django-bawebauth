@@ -5,9 +5,6 @@ class PositiveBigIntegerField(models.PositiveIntegerField):
     """Represents MySQL's unsigned BIGINT data type (works with MySQL only!)"""
     empty_strings_allowed = False
 
-    def get_internal_type(self):
-        return "PositiveBigIntegerField"
-
     def db_type(self, connection):
         if connection.settings_dict['ENGINE'] == 'django.db.backends.mysql':
             # This is how MySQL defines 64 bit unsigned integer data types
