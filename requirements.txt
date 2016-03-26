@@ -1,4 +1,4 @@
-Django==1.8.10
+Django==1.8.11
 django-compressor==1.6
 django-redis==4.3.0
 pytz
