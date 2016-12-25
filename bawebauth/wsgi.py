@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import, unicode_literals
+
 def application(environ, *args, **kwargs):
     import os
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', environ.get('DJANGO_SETTINGS_MODULE', 'bawebauth.settings'))
