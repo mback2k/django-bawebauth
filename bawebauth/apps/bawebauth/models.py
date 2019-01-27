@@ -14,7 +14,7 @@ class Device(models.Model):
     active = models.BooleanField(_('active'), default=False)
     enabled = models.BooleanField(_('enabled'), default=False)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     @property
@@ -43,5 +43,5 @@ class Usage(models.Model):
     received = PositiveBigIntegerField(_('bytes received'))
     crdate = models.DateTimeField(_('date created'), auto_now_add=True)
 
-    def __unicode__(self):
-        return u'%s %s+ %s-' % (self.crdate, self.send, self.received)
+    def __str__(self):
+        return '%s %s+ %s-' % (self.crdate, self.send, self.received)
