@@ -90,11 +90,6 @@ LOGGING = {
         },
     },
     'loggers': {
-        'celery': {
-            'handlers': ['stream', 'mail_admins'],
-            'level': 'WARNING',
-            'propagate': True,
-        },
         'django': {
             'handlers': ['stream', 'mail_admins'],
             'level': 'WARNING',

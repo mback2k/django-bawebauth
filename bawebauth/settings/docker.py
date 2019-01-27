@@ -30,9 +30,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_CACHE_ALIAS = 'default'
 
-CELERY_BROKER_URL = 'redis://redis:6379/1'
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL
-
 ALLOWED_HOSTS = ['localhost']
 DEFAULT_FROM_EMAIL = 'no-reply@localhost'
 
