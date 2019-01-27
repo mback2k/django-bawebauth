@@ -55,7 +55,6 @@ def edit_device(request, device_id):
 
 @login_required
 def switch_device(request, device_id):
-    devices = Device.objects.all().filter(user=request.user).order_by('name')
     device = get_object_or_404(Device, user=request.user, id=device_id)
     device.enabled = not(device.enabled)
     device.active = True
