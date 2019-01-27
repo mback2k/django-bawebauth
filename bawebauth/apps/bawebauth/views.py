@@ -3,13 +3,13 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseForbidden, Http404
 from django.template import RequestContext
-from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.contrib import messages
 from .forms import DeviceForm
 from .models import Device, Usage
 
 def show_home(request):
-    return render_to_response('show_home.html', context_instance=RequestContext(request))
+    return render(request, 'show_home.html')
 
 @login_required
 def show_dashboard(request):
@@ -19,7 +19,7 @@ def show_dashboard(request):
         'devices': devices,
     }
 
-    return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
+    return render(request, 'show_dashboard.html', template_values)
 
 @login_required
 def show_device(request, device_id):
@@ -31,7 +31,7 @@ def show_device(request, device_id):
         'device': device,
     }
 
-    return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
+    return render(request, 'show_dashboard.html', template_values)
 
 @login_required
 def edit_device(request, device_id):
@@ -51,7 +51,7 @@ def edit_device(request, device_id):
         'device_edit_form': edit_form,
     }
 
-    return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
+    return render(request, 'show_dashboard.html', template_values)
 
 @login_required
 def switch_device(request, device_id):
@@ -77,7 +77,7 @@ def delete_device(request, device_id):
         'devices': devices,
     }
 
-    return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
+    return render(request, 'show_dashboard.html', template_values)
 
 @login_required
 def delete_device_ask(request, device_id):
@@ -91,4 +91,4 @@ def delete_device_ask(request, device_id):
         'devices': devices,
     }
 
-    return render_to_response('show_dashboard.html', template_values, context_instance=RequestContext(request))
+    return render(request, 'show_dashboard.html', template_values)
