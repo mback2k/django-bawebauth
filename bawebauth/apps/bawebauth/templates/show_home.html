@@ -4,7 +4,7 @@
   <li class="active"><strong>Home</strong></li>
   {% if user.is_authenticated %}
   <li><a href="{% url 'bawebauth:show_dashboard' %}" title="Dashboard">Dashboard</a></li>
-  <li><a href="{% url 'django.contrib.auth.views.password_change' %}" title="Change Password">Change Password</a></li>
+  <li><a href="{% url 'password_change' %}" title="Change Password">Change Password</a></li>
   {% endif %}
 {% endblock %}
 
