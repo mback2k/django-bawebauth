@@ -79,8 +79,8 @@ LOGGING = {
         },
     },
     'handlers': {
-        'stream': {
-            'level': 'WARNING',
+        'console': {
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
         },
         'mail_admins': {
@@ -90,10 +90,19 @@ LOGGING = {
         },
     },
     'loggers': {
+        'django.request': {
+            'handlers': ['console', 'mail_admins'],
+            'level': 'INFO',
+            'propagate': False,
+        },
         'django': {
-            'handlers': ['stream', 'mail_admins'],
+            'handlers': ['console', 'mail_admins'],
             'level': 'WARNING',
-            'propagate': True,
+            'propagate': False,
         },
     },
+    'root': {
+        'handlers': ['console', 'mail_admins'],
+        'level': 'WARNING',
+    }
 }
