@@ -21,8 +21,8 @@ logger = logging.getLogger('django')
 def parse_request(request):
     data = {}
     for line in request.readlines():
-        if ':' in line:
-            line = line.partition(':')
+        line = line.decode('utf-8').partition(':')
+        if line[1] == ':':
             data[line[0].strip().lower()] = line[2].strip()
     logger.debug(str(data))
     return data
