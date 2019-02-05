@@ -2,7 +2,7 @@
 django-appconf==1.0.2
 django-compressor==2.2
 django-redis==4.10.0
-django==1.11.18
+django==2.1.5
 gunicorn==19.9.0
 pytz==2018.9
 rcssmin==1.0.6
