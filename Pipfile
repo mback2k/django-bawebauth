@@ -12,7 +12,7 @@ django-redis = "==4.10.0"
 gunicorn = "*"
 whitenoise = "*"
 pytz = "*"
-Django = "==1.11.18"
+Django = "==1.11.20"
 django_compressor = "==2.2"
 
 [requires]
