@@ -10,7 +10,7 @@ coverage = "*"
 [packages]
 django-redis = "~=4.10.0"
 gunicorn = "*"
-whitenoise = "*"
+whitenoise = "~=4.1"
 pytz = "*"
 Django = "~=1.11"
 django_compressor = "~=2.3"

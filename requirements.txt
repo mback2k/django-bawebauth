@@ -2,11 +2,11 @@
 django-appconf==1.0.3
 django-compressor==2.3
 django-redis==4.10.0
-django==1.11.25
-gunicorn==19.9.0
+django==1.11.27
+gunicorn==20.0.4
 pytz==2019.3
 rcssmin==1.0.6
 redis==3.3.11
 rjsmin==1.1.0
-six==1.12.0
+six==1.13.0
 whitenoise==4.1.4
