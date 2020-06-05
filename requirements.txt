@@ -1,12 +1,11 @@
 -i https://pypi.org/simple/
-django-appconf==1.0.3
+django-appconf==1.0.4
 django-compressor==2.3
 django-redis==4.10.0
-django==1.11.28
+django==1.11.29
 gunicorn==20.0.4
 pytz==2019.3
 rcssmin==1.0.6
-redis==3.4.1
+redis==3.5.3
 rjsmin==1.1.0
-six==1.14.0
 whitenoise==4.1.4
